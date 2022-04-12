@@ -1,0 +1,96 @@
+{% extends 'control/base.html' %}
+{% load static %}
+
+{% block title %} Добавить новое категория| Yola{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'control_categories_all' %}">Категории</a></li>
+<li class="breadcrumb-item active" aria-current="page">Добавить</li>
+{% endblock breadcrumb %}
+{% block add %}
+{% endblock add %}
+
+{% block page_title %}Добавить категория {% endblock page_title %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+      <div class="p-4 border rounded">
+        {% if base.code == "error" %}
+        <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
+          <div class="d-flex align-items-center">
+            <div class="fs-3 text-white"><ion-icon name="close-circle-sharp"></ion-icon>
+            </div>
+            <div class="ms-3">
+              <div class="text-white">Есть категория с таким названием.!</div>
+            </div>
+          </div>
+          <h3 class="alert_nums text-light align-self-center">7</h3>
+        </div>
+        {% endif %}
+        <form class="row g-3 needs-validation" action="{% url 'control_category_create' %}" method="POST" novalidate>
+            {% csrf_token %}
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Название категория RU</label>
+            <input type="text" name="title_ru" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите название.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Название категория UZ</label>
+            <input type="text" name="title_uz" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите название.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Приоритет</label>
+            <div class="input-group has-validation"> <span class="input-group-text" id="inputGroupPrepend">№</span>
+              <input type="number" name="priority" value="1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value.length > 12) {this.value = 0}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+              <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary" type="submit">Добавить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block js_content %}
+<script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
+<script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+      'use strict'
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.querySelectorAll('.needs-validation')
+
+      // Loop over them and prevent submission
+      Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+</script>
+
+<script>
+    setInterval(myTimer, 1000);
+    function myTimer() {
+        const d = new Date();
+        let cc = document.querySelectorAll('.alert_nums');
+        cc.forEach(element => {
+            element.innerHTML -= 1
+        })
+    }
+    setInterval(()=> $(".alert").alert('close'), 6000)
+  </script>
+{% endblock js_content %}

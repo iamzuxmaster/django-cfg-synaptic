@@ -6,8 +6,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 
-class Country(models.Model):
-    title = models.CharField(max_length=255)
+class Region(models.Model):
+    title_uz = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
     code = models.CharField(max_length=255)
 
@@ -20,9 +20,9 @@ class Country(models.Model):
 
 
 
-class City(models.Model):
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
+class Disctrict(models.Model):
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)    
+    title_uz = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
     code = models.CharField(max_length=255)
 
@@ -61,7 +61,7 @@ class Account(models.Model):
 
 
 class Category(models.Model): 
-    title = models.CharField(max_length=255)
+    title_uz = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
     slug = models.CharField(max_length=250)
     priority = models.IntegerField(default=0)
@@ -72,7 +72,7 @@ class Category(models.Model):
         super(Category, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
-        return f"{self.title}"
+        return f"{self.title_ru}"
 
     class Meta: 
         verbose_name = "Категория"
@@ -95,7 +95,7 @@ class Category(models.Model):
 
 class SubCategory(models.Model): 
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    title = models.CharField(max_length=255)
+    title_uz = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
     priority = models.IntegerField()
     slug = models.CharField(max_length=255)
@@ -123,7 +123,7 @@ class SubCategory(models.Model):
 
 
 class Discount(models.Model):
-    title = models.CharField(max_length=255)
+    title_uz = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
     unit = models.IntegerField(default=0, validators=[MaxValueValidator(100),MinValueValidator(0)])
 
@@ -141,10 +141,10 @@ class Discount(models.Model):
 class Product(models.Model): 
     category  = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True)
-    title = models.CharField(max_length=250)
+    title_uz = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
-    description = models.TextField()
-    description_ru = models.TextField()
+    description_uz = models.TextField()
+    description_ru = models.TextField(null=True, blank=True)
     slug = models.CharField(max_length=255)
     priority = models.IntegerField()
     price = models.IntegerField()
@@ -159,7 +159,7 @@ class Product(models.Model):
 
 
     def __str__(self):
-        return f"{self.title} ({self.category.title}): {self.price} UZS"
+        return f"{self.title_ru} ({self.category.title}): {self.price} UZS"
     
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title_ru)
@@ -188,8 +188,10 @@ class ProductImage(models.Model):
         verbose_name_plural = "Фото продукты"
 
 class Slider(models.Model):
-    title = models.CharField(max_length=255)
-    description = models.TextField()
+    title_uz = models.CharField(max_length=255)
+    title_ru = models.CharField(max_length=255)
+    description_uz = models.TextField()
+    description_ru = models.TextField(null=True, blank=True)
     img_min = ResizedImageField(size=[300, 300], quality=100, upload_to=f"web/sliders/700x300/",  null=True, blank=True)
     img_full = ResizedImageField(size=[1200, 500], quality=100, upload_to=f"web/sliders/1200x500/", null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -202,9 +204,11 @@ class Slider(models.Model):
         verbose_name_plural = "Слайды"
         
 class Blog(models.Model): 
-    title = models.CharField(max_length=255)
+    title_uz = models.CharField(max_length=255)
+    title_ru = models.CharField(max_length=255, null=True, blank=True)
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
-    description = models.TextField()
+    description_uz = models.TextField()
+    description_ru = models.TextField(null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     
     def __str__(self) -> str:
@@ -213,4 +217,20 @@ class Blog(models.Model):
     class Meta:
         verbose_name = "Блог"
         verbose_name_plural = "Блог"
-        
+
+class Office(models.Model):
+    title_uz = models.CharField(max_length=255)
+    title_ru = models.CharField(max_length=255)
+    description_uz  = models.TextField(max_length=255)
+    description_ru  = models.TextField(max_length=255)
+    logo = ResizedImageField(size=[600, 600], quality=100, upload_to=f"control/office/")
+    phone = models.IntegerField()
+    email = models.CharField(max_length=255)
+    
+    
+    def __str__(self) -> str:
+        return f"{self.title}"
+    
+    class Meta:
+        verbose_name = "Инфо"
+        verbose_name_plural = "Инфо"

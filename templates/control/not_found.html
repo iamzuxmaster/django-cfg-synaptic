@@ -1,0 +1,70 @@
+{% load static %} 
+
+<!doctype html>
+<html lang="en" class="light-theme">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+  <!-- loader-->
+    <link href="{% static 'control/assets/css/pace.min.css' %}" rel="stylesheet" />
+    <script src="{% static 'control/assets/js/pace.min.js' %}"></script>
+
+  <!--plugins-->
+  <link href="{% static 'control/assets/plugins/simplebar/css/simplebar.css' %}" rel="stylesheet" />
+  <link href="{% static 'control/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css' %}" rel="stylesheet" />
+  <link href="{% static 'control/assets/plugins/metismenu/css/metisMenu.min.css' %}" rel="stylesheet" />
+
+  <!-- CSS Files -->
+  <link href="{% static 'control/assets/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'control/assets/css/bootstrap-extended.css' %}" rel="stylesheet">
+  <link href="{% static 'control/assets/css/style.css' %}" rel="stylesheet">
+  <link href="{% static 'control/assets/css/icons.css' %}" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+  <!--Theme Styles-->
+  <link href="{% static 'control/assets/css/dark-theme.css' %}" rel="stylesheet" />
+  <link href="{% static 'control/assets/css/semi-dark.css' %}" rel="stylesheet" />
+  <link href="{% static 'control/assets/css/header-colors.css' %}" rel="stylesheet" />
+
+  <title>Вход в аккаунт | Yola.menu</title>
+</head>
+
+<body>
+
+  <!--start wrapper-->
+  <div class="wrapper">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-4 col-lg-5 col-md-7 mx-auto mt-5">
+          <div class="card radius-10">
+            <div class="card-body p-4">
+                {% if code == "user404" %}
+                <div class="alert alert-dismissible fade show py-2 bg-danger">
+                  <div class="d-flex align-items-center">
+                    <div class="ms-3">
+                      <div class="text-white text-center">Ошибка электронной почты или пароля</div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+              <div class="text-center">
+                <h4>У вас нет разрешения на доступ к этой страницу</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="my-5">
+      <div class="container">
+      </div>
+    </footer>
+  </div>
+  <!--end wrapper-->
+
+
+</body>
+
+</html>

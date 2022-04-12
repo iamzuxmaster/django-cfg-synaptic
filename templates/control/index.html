@@ -1,0 +1,154 @@
+{% extends 'control/base.html' %}
+{% load static %}
+
+{% block title %} | Yola{% endblock title %}
+
+{% block breadcrumb %}
+
+{% endblock breadcrumb %}
+{% block page_title %}{% endblock page_title %}
+
+{% block content %}
+<link href="{% static 'control/assets/plugins/datetimepicker/css/classic.css' %}" rel="stylesheet" />
+<link href="{% static 'control/assets/plugins/datetimepicker/css/classic.time.css' %}" rel="stylesheet" />
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 row-cols-xxl-3">
+  <div class="col">
+    <div class="card radius-10">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="widget-icon-2 bg-gradient-info text-white">
+            <ion-icon name="bag-handle-sharp"></ion-icon>
+          </div>
+          <div class="fs-5 ms-auto"><ion-icon name="ellipsis-horizontal-sharp"></ion-icon></div>
+        </div>
+        <div class="d-flex justify-content-between text-center">
+          <h5 class="my-3">Продукты</h5>
+          <div class="progress mt-1" style="height: 5px;">
+            <div class="progress-bar bg-gradient-info" role="progressbar" style="width: 50%"></div>
+          </div>
+          <p class="mb-0 mt-2 align-self-center">{{ products.count }}</p>
+        </div>
+      </div>
+    </div>
+   </div>
+   <div class="col">
+    <div class="card radius-10">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="widget-icon-2 bg-gradient-danger text-white">
+            <ion-icon name="card-sharp"></ion-icon>
+          </div>
+          <div class="fs-5 ms-auto"><ion-icon name="ellipsis-horizontal-sharp"></ion-icon></div>
+        </div>
+        
+        <div class="d-flex justify-content-between text-center">
+          <h5 class="my-3">Категории</h5>
+          <p class="mb-0 mt-2 align-self-center">{{ categories.count }}</p>
+        </div>
+      </div>
+    </div>
+   </div>
+   <div class="col">
+    <div class="card radius-10">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="widget-icon-2 bg-gradient-success text-white">
+            <ion-icon name="wallet-sharp"></ion-icon>
+          </div>
+          <div class="fs-5 ms-auto"><ion-icon name="ellipsis-horizontal-sharp"></ion-icon></div>
+        </div>
+        
+        <div class="d-flex justify-content-between text-center">
+          <h5 class="my-3">Слайдеры</h5>
+          <p class="mb-0 mt-2 align-self-center">{{ sliders.count }}</p>
+        </div>
+      </div>
+    </div>
+   </div>
+  </div>
+
+  <div class="card radius-10 overflow-hidden w-100">
+    <div class="card-body">
+      <div class="d-flex align-items-center mb-3">
+        <h6 class="mb-0">Monthly Orders</h6>
+        <div class="dropdown options ms-auto">
+          <div class="dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown">
+            <ion-icon name="ellipsis-horizontal-sharp"></ion-icon>
+          </div>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="javascript:;">Action</a></li>
+            <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
+            <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="chart-container1">
+        <canvas id="chart1"></canvas>
+      </div>
+    </div>
+  </div>
+     
+  </div><!--end row-->
+{% endblock content %}
+
+{% block js_content %}
+
+<script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
+<script src="{% static 'control/assets/plugins/chartjs/chart.min.js' %}"></script>
+<script src="{% static 'control/assets/js/index3.js' %}"></script>
+<script src="{% static 'control/assets/plugins/datetimepicker/js/legacy.js' %}"></script>
+<script src="{% static 'control/assets/plugins/datetimepicker/js/picker.js' %}"></script>
+<script src="{% static 'control/assets/plugins/datetimepicker/js/picker.time.js' %}"></script>
+<script src="{% static 'control/assets/plugins/datetimepicker/js/picker.date.js' %}"></script>
+<script src="{% static 'control/assets/plugins/bootstrap-material-datetimepicker/js/moment.min.js' %}"></script>
+<script src="{% static 'control/assets/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.min.js' %}"></script>
+<script src="{% static 'control/assets/js/form-date-time-pickes.js' %}"></script>
+<script src="{% static 'control/assets/plugins/input-tags/js/tagsinput.js' %}"></script>
+
+<script>
+  let check = document.querySelectorAll('#checker')
+  check.forEach((elements, index) => {
+    elements.addEventListener("change", ()=> {
+      let time = document.querySelectorAll("input[type='time']")
+        if (elements.checked) {
+          elements.parentElement.parentElement.children[1].children[0].removeAttribute("disabled")
+          elements.parentElement.parentElement.children[2].children[0].removeAttribute("disabled")
+        } else { 
+          elements.parentElement.parentElement.children[1].children[0].setAttribute("disabled", "true")
+          elements.parentElement.parentElement.children[2].children[0].setAttribute("disabled", "true")
+        }
+    })
+  })
+</script>
+
+<script>
+    (function () {
+      'use strict'
+
+      var forms = document.querySelectorAll('.needs-validation')
+      Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+</script>
+
+<script>
+  setInterval(myTimer, 1000);
+  function myTimer() {
+      const d = new Date();
+      let cc = document.querySelectorAll('.alert_nums');
+      cc.forEach(element => {
+          element.innerHTML -= 1
+      })
+  }
+  setInterval(()=> $(".alert").alert('close'), 6000)
+</script>
+{% endblock js_content %}

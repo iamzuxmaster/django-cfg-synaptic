@@ -1,0 +1,277 @@
+{% load static %}
+{% load static %}
+<!doctype html>
+<html lang="en" class=" edit-theme">
+  <script>
+    let edit_theme = document.querySelector(".edit-theme")
+    edit_theme.classList.add(localStorage.getItem("theme"))
+  </script>
+
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- loader-->
+	  <link href="{% static 'control/assets/css/pace.min.css' %}" rel="stylesheet" />
+	  <script src="{% static 'control/assets/js/pace.min.js' %}"></script>
+
+    <!--plugins-->
+    <link href="{% static 'control/assets/plugins/simplebar/css/simplebar.css' %}" rel="stylesheet" />
+    <link href="{% static 'control/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css' %}" rel="stylesheet" />
+    <link href="{% static 'control/assets/plugins/metismenu/css/metisMenu.min.css' %}" rel="stylesheet" />
+
+    <!-- CSS Files -->
+    <link href="{% static 'control/assets/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'control/assets/css/bootstrap-extended.css' %}" rel="stylesheet">
+    <link href="{% static 'control/assets/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'control/assets/css/icons.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <!--Theme Styles-->
+    <link href="{% static 'control/assets/css/dark-theme.css' %}" rel="stylesheet" />
+    <link href="{% static 'control/assets/css/semi-dark.css' %}" rel="stylesheet" />
+    <link href="{% static 'control/assets/css/header-colors.css' %}" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor5/31.1.0/ckeditor.min.js" 
+    integrity="sha512-A2+2JT5Hd8WgdCcY0kx5vxi+W6c+e3gv0M1rYpJ1uaYBofZ+izmDSEQLTRctRcRfxA+iGE+MhCjdFMFDYubFQw==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+      div.col-sm-12.col-md-6 {
+        margin-bottom: 10px;
+      }
+      div.col-sm-12.col-md-6 #example_filter {
+        text-align: right;
+      }
+    </style>
+    <style>
+      .ck-editor__editable_inline { 
+        min-height: 200px; 
+        width: 100%;
+        }
+    </style>
+    <script>
+      function getToken(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          var cookies = document.cookie.split(";");
+          for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+  
+      var csrftoken = getToken("csrftoken");
+    </script>
+
+    <title>{% block title %} {% endblock title %}</title>
+    <style>
+      .table-responsive {
+        overflow-x: hidden; 
+      }
+    </style>
+  </head>
+  <body>
+    
+
+ <!--start wrapper-->
+    <div class="wrapper">
+       
+       <!--start sidebar -->
+       <aside class="sidebar-wrapper" data-simplebar="true">
+        <div class="sidebar-header">
+          
+          <div>
+            <h2 class="logo-text">{{ base.vendor.title}}</h2>
+          </div>
+          <div class="toggle-icon ms-auto"><ion-icon name="menu-sharp"></ion-icon>
+          </div>
+        </div>
+        <!--navigation-->
+        <ul class="metismenu" id="menu">
+          <li>
+            <a href="{% url 'control_index' %}">
+              <div class="parent-icon"><ion-icon name="home-sharp"></ion-icon>
+              </div>
+              <div class="menu-title">Главная</div>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'control_categories_all' %}">
+              <div class="parent-icon"><ion-icon name="apps-sharp"></ion-icon>
+              </div>
+              <div class="menu-title">Категории</div>
+            </a>
+          </li>
+          <li>
+            <a href="'control_products_all'">
+              <div class="parent-icon"><ion-icon name="ellipse-sharp"></ion-icon>
+              </div>
+              <div class="menu-title">Наименование</div>
+            </a>
+          </li>
+          <li>
+            <a href="'control_accounts_all'">
+              <div class="parent-icon"><ion-icon name="person-circle-sharp"></ion-icon>
+              </div>
+              <div class="menu-title">Пользователи</div>
+            </a>
+          </li>
+          <li>
+            <a href="'control_sliders_all'">
+              <div class="parent-icon"><ion-icon name="copy-sharp"></ion-icon>
+              </div>
+              <div class="menu-title">Слайдеры</div>
+            </a>
+          </li>
+          <li>
+            <a href="'control_contacts_all'">
+              <div class="parent-icon"><ion-icon name="mail-sharp"></ion-icon>
+              </div>
+              <div class="menu-title">Обратная связь </div>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#logout">
+              <div class="parent-icon"><ion-icon name="exit-sharp" class="text-danger"></ion-icon>
+              </div>
+              <div class="menu-title text-danger">Выход</div>
+            </a>
+          </li>
+          </ul>
+        <!--end navigation-->
+     </aside>
+     <!--end sidebar -->
+
+        <!--start top header-->
+          <header class="top-header">
+            <nav class="navbar navbar-expand gap-3">
+              <div class="mobile-menu-button"><ion-icon name="menu-sharp"></ion-icon></div>
+
+                  <h3 class="mt-2 admin-clock">---</h3>
+                  
+             
+             <div class="top-navbar-right ms-auto">
+
+              <ul class="navbar-nav align-items-center">
+                <li class="nav-item mobile-search-button">
+                  <a class="nav-link" href="javascript:;">
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link dark-mode-icon" href="javascript:;">
+                    <div class="mode-icon">
+                      <ion-icon name="moon-sharp"></ion-icon> 
+                    </div>
+                  </a>
+                </li>
+                
+               </ul>
+
+              </div>
+            </nav>
+          </header>
+        <!--end top header-->
+
+
+        <!-- start page content wrapper-->
+        <div class="page-content-wrapper">
+          <!-- start page content-->
+         <div class="page-content">
+
+          <!--start breadcrumb-->
+          <div class="page-breadcrumb d-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3 d-none d-sm-block">{% block page_title %}{% endblock page_title %}</div>
+            {% block add %}
+            {% endblock add %}
+          </div>
+          <!--end breadcrumb-->
+          <hr/>
+          {% block content %}
+          {% endblock content %}
+          </div>
+          <!-- end page content-->
+         </div>
+         <!--end page content wrapper-->
+        <!--start footer-->
+        
+          <!--end footer-->
+
+
+        <!--Start Back To Top Button-->
+		     <a href="javaScript:;" class="back-to-top"><ion-icon name="arrow-up-outline"></ion-icon></a>
+         <!--End Back To Top Button-->
+  
+
+
+          <!--start overlay-->
+           <div class="overlay nav-toggle-icon"></div>
+          <!--end overlay-->
+
+     </div>
+  <!--end wrapper-->
+     
+  <script>
+    let theme = document.querySelector(".edit-theme")
+    theme.addEventListener("click", ()=>{
+      localStorage.setItem("theme",theme.classList.value);
+    })
+  </script>
+
+
+<div class="col">
+  <!-- Modal -->
+  <div class="modal fade" id="logout" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><b>Выход</b></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <h4>Вы точно хотите выйти ? </h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Отмена</button>
+              <a href="'log_out' %}" class="btn btn-outline-danger">Выход</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- JS Files-->
+    <script src="{% static 'control/assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'control/assets/plugins/simplebar/js/simplebar.min.js' %}"></script>
+    <script src="{% static 'control/assets/plugins/metismenu/js/metisMenu.min.js' %}"></script>
+    <script src="{% static 'control/assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script type="module" src="https://unpkg.com/ionicons@6.0.0/dist/ionicons/ionicons.esm.js"></script>
+    <!--plugins-->
+    <!-- Main JS-->
+
+    <script src="{% static 'control/assets/js/main.js' %}"></script>
+     <!-- Contents -->
+  <script>
+    var span = document.querySelector('.admin-clock');
+
+    function time() {
+      var d = new Date();
+      var s = d.getSeconds();
+      var m = d.getMinutes();
+      var h = d.getHours();
+      span.innerText = 
+        ("0" + h).substr(-2) + ":" + ("0" + m).substr(-2) + ":" + ("0" + s).substr(-2);
+    }
+    
+    setInterval(time, 1000);
+  </script>
+     {% block js_content %}
+     {% endblock js_content %}
+  </body>
+</html>

@@ -1,0 +1,160 @@
+{% extends 'control/base.html' %}
+{% load static %}
+
+{% block title %} | Yola{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page">Наименование</li>
+{% endblock breadcrumb %}
+{% block add %}
+<div class="ms-auto d-block">
+  <div class="btn-group">
+    <a href="{% url 'control_products_add' %}" class="btn btn-outline-primary d-block">Добавить</a>
+  </div>
+</div>
+{% endblock add %}
+
+{% block page_title %}Все наименовании{% endblock page_title %}
+
+{% block content %}
+{% if base.code == "created" %}
+<div class="alert alert-dismissible fade show py-2 bg-success d-flex justify-content-between">
+  <div class="d-flex align-items-center">
+    <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
+    </div>
+    <div class="ms-3">
+      <div class="text-white">Наименование создана.</div>
+    </div>
+  </div>
+  <h3 class="alert_nums text-light align-self-center">7</h3>
+</div>
+{% elif base.code == "deleted" %}
+<div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
+  <div class="d-flex align-items-center">
+    <div class="fs-3 text-white"><ion-icon name="trash-sharp"></ion-icon>
+    </div>
+    <div class="ms-3">
+      <div class="text-white">Наименование удалено.</div>
+    </div>
+  </div>
+  <h3 class="alert_nums text-light align-self-center">7</h3>
+</div>
+{% elif base.code == "error" %}
+<div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
+  <div class="d-flex align-items-center">
+    <div class="fs-3 text-white"><ion-icon name="alert-circle-sharp"></ion-icon>
+    </div>
+    <div class="ms-3">
+      <div class="text-white">Что-то пошло не так...</div>
+    </div>
+  </div>
+  <h3 class="alert_nums text-light align-self-center">7</h3>
+</div>
+{% endif %}
+
+<div class="card">
+  <div class="card-body">
+      <div class="table-responsive">
+          <table id="example" class="table table-striped table-bordered" style="width:100%">
+              <thead>
+                  <tr>
+                      <th>Фото</th>
+                      <th>Название</th>
+                      <th>Категория</th>
+                      <th>Приоритет</th>
+                      <th>Цена</th>
+                      <th>Детали</th>
+                      <th>Стоп</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for product in products %}
+                  <tr style="vertical-align: middle;" class="table{{product.id}}">
+                      <td><img height="50" width="50"  class="rounded" src="{{ product.img_min.url }}" alt="" style="object-fit: cover;"></td>
+                      <td {% if product.stoplist %} class="text-danger"{% endif %}>{{ product.title_ru }}</td>
+                      <td {% if product.stoplist %} class="text-danger"{% endif %}>{{ product.category.title_ru  }}</td>
+                      <td {% if product.stoplist %} class="text-danger"{% endif %}>{{ product.priority  }}</td>
+                      <td {% if product.stoplist %} class="text-danger"{% endif %}>{{ product.price }} UZS </td>
+                      <td><a href="{% url 'control_products_detail' product.slug %}" class="btn btn-success btn-sm"> Изменить </a> 
+                        {% if product.stoplist %}
+                          <a class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Товар не видно."><ion-icon name="warning-sharp" class="m-0"></ion-icon></a>
+                        {% else %}                          
+                        <a class="btn btn-danger btn-sm d-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Товар не видно."><ion-icon name="warning-sharp" class="m-0"></ion-icon></a>
+                        {% endif %}
+                      </td>
+                      <td style="font-size: 22px;"> <a href="javascript:;" data-id="{{product.id}}"  class="text-danger stop"> 
+                        {% if product.stoplist %}
+                        <div class="text-success"><ion-icon name="play-circle-sharp"></ion-icon> Откр </div>
+                        {% else %}
+                        <div class="text-danger"><ion-icon name="pause-circle-sharp"></ion-icon> Cтоп</div>
+                        {% endif %}
+                      </a></td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
+  </div>
+</div>
+{% endblock content %}
+{% block js_content %}
+<script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
+<script src="{% static 'control/assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'control/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
+<script src="{% static 'control/assets/js/table-datatable.js' %}"></script>
+<script src="{% static 'control/assets/js/component-popovers-tooltips.js' %}"></script>
+<script>
+  setInterval(myTimer, 1000);
+  function myTimer() {
+      const d = new Date();
+      let cc = document.querySelectorAll('.alert_nums');
+      cc.forEach(element => {
+          element.innerHTML -= 1
+      })
+  }
+  setInterval(()=> $(".alert").alert('close'), 6000)
+</script>
+
+
+<script>
+  let add_stop = document.querySelectorAll('.stop');
+  add_stop.forEach(element => {
+    element.addEventListener("click", ()=> {
+      url = "/admin/product/add/stop/"
+      fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+            id: element.dataset.id,
+        })
+    }).then(data => data.json()).then(resp => {
+      if (resp["stop"] == true) {
+        let th = document.querySelectorAll(`.table${element.dataset.id} td`)
+        let btn = document.querySelectorAll(`.table${element.dataset.id} .btn-danger`)
+        th.forEach(el => {
+          el.classList.toggle("text-danger")
+        })
+        btn.forEach(ml => {
+          ml.classList.toggle("d-none")
+        })
+        element.innerHTML = `<div class="text-success"><ion-icon name="play-circle-sharp"></ion-icon> Откр </div>`
+      } else {
+        let th = document.querySelectorAll(`.table${element.dataset.id} td`)
+        let btn = document.querySelectorAll(`.table${element.dataset.id} .btn-danger`)
+        th.forEach(el => {
+          el.classList.toggle("text-danger")
+        })
+        btn.forEach(ml => {
+          ml.classList.toggle("d-none")
+        })
+        element.innerHTML = `<div class="text-danger"><ion-icon name="pause-circle-sharp"></ion-icon> Cтоп</div>`
+      }
+    })
+    })
+  })
+</script>
+
+{% endblock js_content %}
