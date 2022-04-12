@@ -1,11 +1,12 @@
-**Version: 1.0.1
+**Version: 1.0.1**
 
-1.0.0
-__28.03.2022
+**1.0.0**
+__28.03.2022__
 -realesed
 
-__12.04.2022
-1.0.1
--added blog, title two language, description two language, Account.role, control, static files, Office, admin-clock, SECURE_PATH_ADMIN
+__12.04.2022__
+**1.0.1**
 
--removed Product.discount[integerfield]
+__-added blog, title two language, description two language, Account.role, control, static files, Office, admin-clock, SECURE_PATH_ADMIN__
+
+__-removed Product.discount[integerfield]__
