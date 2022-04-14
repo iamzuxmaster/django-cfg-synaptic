@@ -1,7 +1,7 @@
-**Version: 1.0.1**
+**MAIN Version: 1.0.1**
 
-**1.0.0**: __28.03.2022__
+**1.0.0**: _28.03.2022_
+- Released
 
-
-**1.0.1** __12.04.2022__ 
-
+**1.0.1** _14.04.2022_ 
+- Aded templates.blogs, sliders, discounts
