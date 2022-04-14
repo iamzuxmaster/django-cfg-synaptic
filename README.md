@@ -4,4 +4,4 @@
 - Released
 
 **1.0.1** _14.04.2022_ 
-- Aded templates.blogs, sliders, discounts
+- Aded templates.blogs, sliders, [ discounts ] 
