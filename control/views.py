@@ -2,7 +2,7 @@ from itertools import product
 import json
 from unicodedata import category
 from django.shortcuts import get_object_or_404, redirect, render
-from web.models import Category, Discount, Office, Product, Slider, SubCategory
+from web.models import Blog, Category, Discount, Office, Product, Slider, SubCategory
 from django.http import JsonResponse
 
 
@@ -240,6 +240,92 @@ def control_subcategories_delete(request):
         return JsonResponse(answer, safe=False)
 
 
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+# Discounts
+
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+def control_discounts_all(request):
+    discounts = Discount.objects.all()
+    context = {
+        "base": base_context(request=request),
+        "discounts":discounts
+    }
+    return render(request, "control/discounts/all.html", context)
+
+
+def control_discount_add(request):
+    context = {
+        "base": base_context(request=request)
+    }
+    return render(request, "control/discounts/add.html", context)
+
+
+def control_discount_create(request):    
+    if request.method == "POST": 
+        title, unit = request.POST["title"], request.POST["unit"]
+        if title.lower().strip() in list(map(lambda discount: discount.title.lower().strip(), Discount.objects.all())):
+            return redirect(SECURE_PATH_ADMIN+"subcategory/add/?error")
+        else:
+            Discount.objects.create(title=title, unit=unit)
+            return redirect(SECURE_PATH_ADMIN+"discounts/?created")
+
+    else: 
+        answer = {
+            "code": 404,
+            "error": "Page Not Found"
+        }
+        return JsonResponse(answer, safe=False)
+
+
+def control_discount_detail(request, id):
+    discount = get_object_or_404(Discount, id=id)
+    context = {
+        "base": base_context(request=request),
+        "discount": discount
+    }
+    return render(request, "control/discounts/detail.html", context)
+
+
+def control_discount_edit(request):
+    if request.method == "POST":
+        discount = get_object_or_404(Discount, id=request.POST["discount_id"])
+        title, unit = request.POST["title"], request.POST["unit"]
+        discount.unit = unit
+
+        if title.lower().strip() == discount.title.lower().strip():
+            discount.save()
+            return redirect(SECURE_PATH_ADMIN + f"discount/{discount.id}/?edited")
+        elif title.lower().strip() in list(map(lambda discount: discount.title.lower().strip(),Discount.objects.all())):
+            discount.save()
+            return redirect(SECURE_PATH_ADMIN + f"discount/{discount.id}/?error")
+        else:
+            discount.title = title
+            discount.save()
+            return redirect(SECURE_PATH_ADMIN + f"discount/{discount.id}/?edited")
+        
+    else: 
+        answer = {
+            "code": 404,
+            "error": "Page Not Found"
+        }
+        return JsonResponse(answer, safe=False)
+
+
+
+def control_discount_delete(request):
+    if request.method == "POST": 
+        discount = get_object_or_404(Discount, id=request.POST["discount_id"])
+        discount.delete()
+        return redirect(SECURE_PATH_ADMIN + "discounts/?deleted")
+    else: 
+        answer = {
+            "code": 404,
+            "error": "Page Not Found"
+        }
+        return JsonResponse(answer, safe=False)
+
+
 
 
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -293,6 +379,30 @@ def control_products_subcategory_add(request):
     return JsonResponse(answer, safe=False)
 
 
+def control_products_discount_add(request):
+    data = json.loads(request.body)
+    title = data["title"]
+    unit = data["unit"]
+    if title.lower().strip() in list(map(lambda discount: discount.title.lower().strip(), Discount.objects.all())):
+        answer ={
+            "code": 403,
+            "error": "Есть категория с таким названием.!"
+        }
+        return JsonResponse(answer, safe=False)
+    else:
+        discount = Discount.objects.create(title=title, unit=unit)
+
+
+    answer ={
+        "code": 200,
+        "discount": {"id": discount.id, "title": discount.title}
+    }
+
+
+    return JsonResponse(answer, safe=False)
+
+
+
 def control_product_create(request):
     if request.method == "POST" and request.FILES["file"]:
         if request.POST["title_ru"].lower().strip() not in list(map(lambda product: product.title_ru.lower().strip(), Product.objects.all())):
@@ -307,7 +417,7 @@ def control_product_create(request):
             img_min = request.FILES["file"]
             img_full = request.FILES["file"]
             Product.objects.create(category=category, subcategory=subcategory, title_ru=title_ru, title_uz=title_uz, priority=priority, price=price, description_ru=description_ru, description_uz=description_uz, img_min=img_min, img_full=img_full)
-            return redirect(SECURE_PATH_ADMIN + 'products/?success')
+            return redirect(SECURE_PATH_ADMIN + 'products/?created')
         else: 
             return redirect(SECURE_PATH_ADMIN + 'product/add/?error')
 
@@ -343,6 +453,11 @@ def control_product_edit(request):
         product.description_uz = request.POST["description_uz"]
         product.priority = request.POST["priority"]
         product.price = request.POST["price"]
+        try: 
+            product.img_full = request.FILES["file"]
+            product.img_min  = request.FILES["file"]
+        except:
+            pass
 
         if request.POST["title_ru"].lower().strip() == product.title_ru.lower().strip():
             product.save()
@@ -352,12 +467,16 @@ def control_product_edit(request):
             product.title_ru = request.POST["title_ru"]
             product.save()
             return redirect(SECURE_PATH_ADMIN + f"product/{product.slug}/?edited")
-            
+
         else: 
             product.save()
             return redirect(SECURE_PATH_ADMIN + f"product/{product.slug}/?error")
         
-
+def control_product_delete(request):
+    if request.method == "POST":
+        product = get_object_or_404(Product, slug=request.POST["product_slug"])
+        product.delete()
+        return redirect(SECURE_PATH_ADMIN + "products/?deleted")
 
 
 
@@ -469,6 +588,11 @@ def control_sliders_edit(request):
         return JsonResponse(answer, safe=False)
 
 
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+# Blog
+
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 def control_sliders_delete(request):
     if request.method == "POST":
@@ -477,3 +601,79 @@ def control_sliders_delete(request):
         slider.delete()
     return redirect(SECURE_PATH_ADMIN+"sliders/?deleted")
 
+
+def control_blogs_all(request):
+    blogs= Blog.objects.all()
+    context = {
+        "base": base_context(request=request),
+        "blogs":blogs
+    }
+    return render(request, "control/blogs/all.html", context)
+
+
+def control_blog_add(request):
+    context = {
+        "base": base_context(request=request)
+    }
+    return render(request, "control/blogs/add.html", context)
+
+
+def control_blog_create(request):    
+    if request.method == "POST" and request.FILES["file"]:  
+        title_ru = request.POST["title_ru"]
+        title_uz = request.POST["title_uz"]
+        description_uz = request.POST["description_uz"]
+        description_ru = request.POST["description_ru"]
+
+        if title_ru.lower().strip() in list(map(lambda category: category.title_ru.lower().strip(), Blog.objects.all())):
+            return redirect(SECURE_PATH_ADMIN+"blog/add/?error")
+        else:
+            Blog.objects.create(
+                title_uz=title_uz, title_ru=title_ru, description_ru=description_ru, description_uz=description_uz,
+                img_full=request.FILES["file"])
+            return redirect(SECURE_PATH_ADMIN+"blogs/?created")
+    else: 
+        answer = {
+            "code": 404,
+            "error": "Page Not Found"
+        }
+        return JsonResponse(answer, safe=False)
+
+
+def control_blog_detail(request, id):
+    blog= get_object_or_404(Blog, id=id)
+    context = {
+        "base": base_context(request=request),
+        "blog": blog
+    }
+    return render(request, "control/blogs/detail.html", context)
+
+
+def control_blog_edit(request):    
+    if request.method == "POST" or request.FILES["file"]:  
+        blog = get_object_or_404(Blog, id=request.POST["blog_id"])
+        blog.title_uz = request.POST["title_uz"]
+        blog.description_uz = request.POST["description_uz"]
+        blog.description_ru = request.POST["description_ru"]
+        try: 
+            blog.img_full = request.FILES["file"]
+        except:
+            pass
+
+        if request.POST["title_ru"].lower().strip() == blog.title_ru.lower().strip():
+            blog.save()
+            return redirect(SECURE_PATH_ADMIN+f"blog/{blog.id}/?edited")
+        if request.POST["title_ru"].lower().strip() in list(map(lambda blog: blog.title_ru.lower().strip(), Blog.objects.all())):
+            blog.save()
+            return redirect(SECURE_PATH_ADMIN+"blog/add/?error")
+        else:
+            blog.title_ru = request.POST["title_ru"]
+            blog.save()
+            return redirect(SECURE_PATH_ADMIN+f"blog/{blog.id}/?edited")
+
+
+def control_blog_delete(request):
+    if request.method == "POST":
+        blog = get_object_or_404(Blog, id=request.POST["blog_id"])
+        blog.delete()
+        return redirect(SECURE_PATH_ADMIN + "blogs/?deleted")

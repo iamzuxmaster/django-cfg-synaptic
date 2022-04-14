@@ -1,0 +1,171 @@
+{% extends 'control/base.html' %}
+{% load static %}
+
+{% block title %} Добавить новое слайд| Yola{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'control_blogs_all' %}">Слайды</a></li>
+<li class="breadcrumb-item active" aria-current="page">Добавить</li>
+{% endblock breadcrumb %}
+{% block add %}
+<div class="ms-auto d-block">
+  <div class="btn-group">
+    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleDangerModal">Удалить</button>
+  </div>
+</div>
+{% endblock add %}
+
+{% block page_title %}Изменить блог{% endblock page_title %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+      <div class="p-4 border rounded">
+        <form class="row g-3 needs-validation" action="{% url 'control_blog_edit' %}" method="POST" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="blog_id" value="{{blog.id}}">
+            <div class="col-md-12">
+                <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-between">
+                  <div class="shadow text-center">
+                    <img src="{{ blog.img_full.url }}" alt="{{ blog.img_full.url }}" style="object-fit: cover;" class="rounded" width="800" height="350px">
+                  </div>
+                  </div>
+                        
+                  <label for="validationCustom01" class="form-label">Изображения </label>
+                  <div class="input-group has-validation mb-3">
+                    <input type="file" name="file" class="form-control has-validation" accept="image/png, image/jpeg" id="inputGroupFile02">
+                  </div>
+              </div>
+              <div class="col-md-12">
+                <label for="validationCustom01" class="form-label">Название слайд UZ</label>
+                <input type="text" name="title_uz" class="form-control" id="validationCustom01" value="{{blog.title_uz}}" required>
+                <div class="invalid-feedback">Пожалуйста, введите название.</div>
+              </div>
+              <div class="col-md-12">
+                <label for="validationCustom01" class="form-label">Название слайд RU</label>
+                <input type="text" name="title_ru" class="form-control" id="validationCustom01" value="{{blog.title_ru}}" required>
+                <div class="invalid-feedback">Пожалуйста, введите название.</div>
+              </div>
+            <div class="col-md-12">
+              <label for="validationCustomUsername" class="form-label">Описание UZ</label>
+                <textarea id="editor" class="form-control" name="description_uz">{{ blog.description_uz }}</textarea>
+            </div>
+            <div class="col-md-12">
+              <label for="validationCustomUsername" class="form-label">Описание RU</label>
+                <textarea id="editor1" class="form-control" name="description_ru">{{ blog.description_ru }}</textarea>
+            </div>
+          <div class="col-12">
+            <button class="btn btn-primary" type="submit">Изменить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block js_content %}
+<div class="col">
+  <!-- Modal -->
+  <div class="modal fade" id="exampleDangerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger"><b>Внимание!</b></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-danger">
+          <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+          <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+          <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+          <input type="checkbox" id="checker"> <label for="checker">OK</label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+          <form action="{% url 'control_blog_delete' %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="blog_id" value="{{ blog.id }}">
+              <button type="submit" class="btn btn-outline-danger delete" disabled>Удалить</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
+<script>
+    (function () {
+      'use strict'
+
+      var forms = document.querySelectorAll('.needs-validation')
+
+      Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+</script>
+
+<script>
+  let check = document.querySelector('#checker')
+  check.addEventListener('change' ,  ()=> {
+  let remove = document.querySelector('.modal-footer .delete')
+  
+  if (check.checked) {
+  remove.removeAttribute('disabled')
+  } else {
+  remove.setAttribute('disabled', 'true')
+  }
+  })
+</script>
+<script>
+  ClassicEditor.defaultConfig = { 
+    toolbar: { 
+      items: [ 
+        'heading', 
+        '|', 
+        'bold', 
+        'italic', 
+        '|', 
+        'bulletedList', 
+        'numberedList', 
+        '|', 
+        'insertTable', 
+        '|', 
+ 
+        'undo', 
+        'redo' 
+      ] 
+    }, 
+ 
+    table: { 
+      contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'] 
+    }, 
+    language: 'en' 
+  }; 
+  ClassicEditor.create(document.querySelector("#editor")).catch((error) => { 
+    console.error(error); 
+  });
+  ClassicEditor.create(document.querySelector("#editor1")).catch((error) => { 
+    console.error(error); 
+  });
+</script>
+<script>
+    setInterval(myTimer, 1000);
+    function myTimer() {
+        const d = new Date();
+        let cc = document.querySelectorAll('.alert_nums');
+        cc.forEach(element => {
+            element.innerHTML -= 1
+        })
+    }
+    setInterval(()=> $(".alert").alert('close'), 6000)
+  </script>
+{% endblock js_content %}

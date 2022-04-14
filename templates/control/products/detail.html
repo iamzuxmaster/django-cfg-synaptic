@@ -8,8 +8,12 @@
 <li class="breadcrumb-item active" aria-current="page">Добавить</li>
 {% endblock breadcrumb %}
 {% block add %}
+<div class="ms-auto d-block">
+  <div class="btn-group">
+    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleDangerModal">Удалить</button>
+  </div>
+</div>
 {% endblock add %}
-
 {% block page_title %}Добавить наименование{% endblock page_title %}
 
 {% block content %}
@@ -48,7 +52,7 @@
             <div class="col-md-12">
                 <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-between">
                   <div class=" shadow text-center">
-                    <img src="{{ product.img_min.url }}" alt="..." class="rounded-circle" width="300">
+                    <img src="{{ product.img_min.url }}" alt="..." style="object-fit: cover;" class="rounded" width="300">
                   </div>
                   </div>
                         
@@ -117,7 +121,7 @@
           <div class="col-md-12">
             <label for="validationCustomUsername" class="form-label">Скидка</label>
             <div class="input-group has-validation"> 
-            <select class="form-select category_select" name="discount_id" aria-label="Default select example" id="validationCustom00">
+            <select class="form-select discount_select" name="discount_id" aria-label="Default select example" id="validationCustom00">
               {% for discount in discounts %}
                 {% if product.discount.id == discount.id %}
                   <option value="{{discount.id}}" selected>{{ discount.title }}</option>
@@ -126,7 +130,7 @@
                 {% endif %}
               {% endfor %}
             </select>
-            <span class="input-group-text" id="inputGroupPrepend"><a href="javascript:;" data-bs-toggle="modal" data-bs-target="#category_add">Нет в списке ? Добавить </a></span>
+            <span class="input-group-text" id="inputGroupPrepend"><a href="javascript:;" data-bs-toggle="modal" data-bs-target="#discount_add">Нет в списке ? Добавить </a></span>
             <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
             </div>
           </div>
@@ -139,7 +143,7 @@
               <textarea id="editor1" class="form-control" name="description_uz">{{ product.description_uz }}</textarea>
           </div>
           <div class="col-12">
-            <button class="btn btn-primary" type="submit">Добавить</button>
+            <button class="btn btn-primary" type="submit">Изменить</button>
           </div>
         </form>
       </div>
@@ -149,6 +153,36 @@
 {% endblock content %}
 
 {% block js_content %}
+<div class="col">
+  <!-- Modal -->
+  <div class="modal fade" id="exampleDangerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger"><b>Внимание!</b></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-danger">
+          <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+          <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+          <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+          <input type="checkbox" id="checker1"> <label for="checker1">OK</label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+          <form action="{% url 'control_products_delete' %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="product_slug" value="{{product.slug}}">
+              <button type="submit" class="btn btn-outline-danger delete" disabled>Удалить</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="col">
   <!-- Modal -->
   <div class="modal fade" id="category_add" tabindex="-1" aria-hidden="true">
@@ -189,6 +223,7 @@
     </div>
   </div>
 </div>
+
 <div class="col">
   <!-- Modal -->
   <div class="modal fade" id="subcategory_add" tabindex="-1" aria-hidden="true">
@@ -240,6 +275,45 @@
     </div>
   </div>
 </div>
+
+<div class="col">
+  <!-- Modal -->
+  <div class="modal fade" id="discount_add" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><b>Добавить новое подкатегория</b></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert_box_discount">
+          </div>
+          <div class="row g-3 needs-validation">
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Название Скидка</label>
+            <input type="text" name="discount_title" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите название.</div>
+          </div>
+        <div class="col-md-12">
+          <label for="validationCustomUsername" class="form-label">Цена</label>
+          <div class="input-group has-validation"> 
+            <input type="number" name="discount_unit" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value > 100){this.value=100}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+            <span class="input-group-text" id="inputGroupPrepend">%</span>
+            <div class="invalid-feedback">Пожалуйста, </div>
+          </div>
+        </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Отмена</button>
+            <button type="submit" class="btn btn-success discount_add">Добавить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
 <script src="{% static 'control/assets/plugins/input-tags/js/tagsinput.js' %}"></script>
 <script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
@@ -312,14 +386,13 @@
       console.log("Error");
     }
   })
-
-
+</script>
+<script>
   let subcategory_add = document.querySelector('.modal .subcategory_add')
 
   url = '/control/subcategory_add/'
   subcategory_add.addEventListener('click', ()=>{
     let subcategory_category = document.querySelector(".modal select[name='subcategory_category']");
-    console.log(subcategory_category.value);
     let subcategory_title_uz = document.querySelector(".modal input[name='subcategory_title_uz']");
     let subcategory_title_ru = document.querySelector(".modal input[name='subcategory_title_ru']");
     let subcategory_priority = document.querySelector(".modal input[name='subcategory_priority']");
@@ -381,6 +454,80 @@
 
 </script>
 
+<script>
+  let discount_add = document.querySelector('.modal .discount_add')
+
+  url_discount = '/control/discount_add/'
+  discount_add.addEventListener('click', ()=>{
+    let discount_title= document.querySelector(".modal input[name='discount_title']");
+    let discount_unit = document.querySelector(".modal input[name='discount_unit']");
+    if (discount_title.value != '' && discount_unit.value != '' ){
+      fetch(url_discount, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+            title: discount_title.value,
+            unit: discount_unit.value,
+        })
+        }).then(resp => resp.json()).then(
+          data => {
+            if (data.code == 200) {
+              let select_option_subcategory = document.querySelector('.discount_select')
+              select_option_subcategory.innerHTML += `<option value="${data.discount.id}">${data.discount.title}</option>`
+              discount_title.value = ''
+              discount_unit.value = ''
+              let alert_box = document.querySelector('.alert_box_discount')
+              alert_box.innerHTML = `
+              <div class="alert alert-dismissible fade show py-2 bg-success d-flex justify-content-between">
+                <div class="d-flex align-items-center">
+                  <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
+                  </div>
+                  <div class="ms-3">
+                    <div class="text-white">Скидка добавлено</div>
+                  </div>
+                </div>
+              </div>
+              `
+            }
+            else{
+              let alert_box = document.querySelector('.alert_box')
+              alert_box.innerHTML = `
+              <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
+                <div class="d-flex align-items-center">
+                  <div class="fs-3 text-white"><ion-icon name="close-circle-sharp"></ion-icon>
+                  </div>
+                  <div class="ms-3">
+                    <div class="text-white">${data.error}</div>
+                  </div>
+                </div>
+              </div>
+              `
+            }
+          }
+        )
+    } else {
+      console.log("Error");
+    }
+  })
+
+
+</script>
+
+<script>
+  let check = document.querySelector('#checker1')
+  check.addEventListener('change' ,  ()=> {
+  let remove = document.querySelector('.modal-footer .delete')
+  
+  if (check.checked) {
+  remove.removeAttribute('disabled')
+  } else {
+  remove.setAttribute('disabled', 'true')
+  }
+  })
+</script>
 
 <script>
   ClassicEditor.defaultConfig = { 

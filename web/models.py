@@ -123,8 +123,7 @@ class SubCategory(models.Model):
 
 
 class Discount(models.Model):
-    title_uz = models.CharField(max_length=255)
-    title_ru = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
     unit = models.IntegerField(default=0, validators=[MaxValueValidator(100),MinValueValidator(0)])
 
     
@@ -136,6 +135,9 @@ class Discount(models.Model):
         verbose_name = "Скидка"
         verbose_name_plural = "Скидки"
 
+    @property
+    def total_product(self):
+        return Product.objects.filter(drop=False, discount=self).count()
 
 
 class Product(models.Model): 
@@ -159,7 +161,7 @@ class Product(models.Model):
 
 
     def __str__(self):
-        return f"{self.title_ru} ({self.category.title}): {self.price} UZS"
+        return f"{self.title_ru} ({self.category.title_ru}): {self.price} UZS"
     
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title_ru)
@@ -218,10 +220,11 @@ class Blog(models.Model):
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
     description_uz = models.TextField()
     description_ru = models.TextField(null=True, blank=True)
+    img_full = ResizedImageField(size=[600, 600], quality=100, upload_to="blogs/", null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     
     def __str__(self) -> str:
-        return f"{self.title}"
+        return f"{self.title_ru}"
 
     class Meta:
         verbose_name = "Блог"

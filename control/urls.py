@@ -22,18 +22,38 @@ urlpatterns = [
         path("subcategory/delete/", views.control_subcategories_delete, name="control_subcategory_delete"),
     path("subcategory/<str:slug>/", views.control_subcategories_detail, name="control_subcategory_detail"),
 
-    # Products
+    # Discounts
+    path("discounts/", views.control_discounts_all, name="control_discounts_all"),
+    path("discount/add/", views.control_discount_add, name="control_discount_add"),
+        path("discount_add/", views.control_products_discount_add, name="control_discount_add"),
+        path("discount/create/", views.control_discount_create, name="control_discount_create"),
+        path("discount/edit/", views.control_discount_edit, name="control_discount_edit"),
+        path("discount/delete/", views.control_discount_delete, name="control_discount_delete"),
+    path("discount/<int:id>/", views.control_discount_detail, name="control_discount_detail"),
+ 
+    # Products 
     path("products/", views.control_products_all, name="control_products_all"),
     path("product/add/", views.control_product_add, name="control_products_add"),
         path("product/create/", views.control_product_create, name="control_products_create"),
         path("product/edit/", views.control_product_edit, name="control_products_edit"),
+        path("product/delete/", views.control_product_delete, name="control_products_delete"),
     path("product/<str:slug>/", views.control_product_detail, name="control_products_detail"),
-        # Sliders
+
+
+    # Sliders
     path("sliders/", views.control_sliders_all, name="control_sliders_all"),
     path("slider/add/", views.control_sliders_add, name="control_sliders_add"),
-        path("slider/create/", views.control_sliders_create, name="control_sliders_create"),
+        path("slider/create/", views.control_sliders_create, name="control_sliders_create"), 
         path("slider/edit/", views.control_sliders_edit, name="control_sliders_edit"),
         path("slider/delete/", views.control_sliders_delete, name="control_sliders_delete"),
     path("slider/<slug:slug>/", views.control_sliders_detail, name="control_sliders_detail"),
 
- ]     
+    # News
+    path("blogs/", views.control_blogs_all, name="control_blogs_all"),
+    path("blog/add/", views.control_blog_add, name="control_blog_add"),
+        path("blog/create/", views.control_blog_create, name="control_blog_create"), 
+        path("blog/edit/", views.control_blog_edit, name="control_blog_edit"),
+        path("blog/delete/", views.control_blog_delete, name="control_blog_delete"),
+    path("blog/<int:id>/", views.control_blog_detail, name="control_blog_detail"),
+
+ ]       

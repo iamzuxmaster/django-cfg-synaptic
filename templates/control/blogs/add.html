@@ -1,0 +1,126 @@
+{% extends 'control/base.html' %}
+{% load static %}
+
+{% block title %} Добавить новое слайд| Yola{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'control_sliders_all' %}">Слайды</a></li>
+<li class="breadcrumb-item active" aria-current="page">Добавить</li>
+{% endblock breadcrumb %}
+{% block add %}
+{% endblock add %}
+
+{% block page_title %}Добавить блог {% endblock page_title %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+      <div class="p-4 border rounded">
+        <form class="row g-3 needs-validation" action="{% url 'control_blog_create' %}" method="POST" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="col-md-12">
+                <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-between">
+                  <div class=" shadow text-center">
+                    <img src="{% static 'control/assets/images/404-error.png' %}" alt="..." style="object-fit: cover;" class="rounded" width="800" height="350px">
+                  </div>
+                  </div>
+                        
+                  <label for="validationCustom01" class="form-label">Изображения </label>
+                  <div class="input-group has-validation mb-3">
+                    <input type="file" name="file" class="form-control has-validation" accept="image/png, image/jpeg"required id="inputGroupFile02">
+                  </div>
+              </div>
+              <div class="col-md-12">
+                <label for="validationCustom01" class="form-label">Название блог RU</label>
+                <input type="text" name="title_ru" class="form-control" id="validationCustom01" required>
+                <div class="invalid-feedback">Пожалуйста, введите название.</div>
+              </div>
+              <div class="col-md-12">
+                <label for="validationCustom01" class="form-label">Название блог UZ</label>
+                <input type="text" name="title_uz" class="form-control" id="validationCustom01" required>
+                <div class="invalid-feedback">Пожалуйста, введите название.</div>
+              </div>
+            <div class="col-md-12">
+                <label for="validationCustomUsername" class="form-label">Описание UZ</label>
+                <textarea id="editor" class="form-control" required name="description_uz">{{ product.description_uz }}</textarea>
+            </div>
+            <div class="col-md-12">
+              <label for="validationCustomUsername" class="form-label">Описание RU</label>
+                <textarea id="editor1" class="form-control" required name="description_ru">{{ product.description_ru }}</textarea>
+            </div>
+          <div class="col-12">
+            <button class="btn btn-primary" type="submit">Добавить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block js_content %}
+<script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
+<script>
+    (function () {
+      'use strict'
+
+      var forms = document.querySelectorAll('.needs-validation')
+
+      Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+</script>
+
+<script>
+  ClassicEditor.defaultConfig = { 
+    toolbar: { 
+      items: [ 
+        'heading', 
+        '|', 
+        'bold', 
+        'italic', 
+        '|', 
+        'bulletedList', 
+        'numberedList', 
+        '|', 
+        'insertTable', 
+        '|', 
+ 
+        'undo', 
+        'redo' 
+      ] 
+    }, 
+ 
+    table: { 
+      contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'] 
+    }, 
+    language: 'en' 
+  }; 
+  ClassicEditor.create(document.querySelector("#editor")).catch((error) => { 
+    console.error(error); 
+  });
+  ClassicEditor.create(document.querySelector("#editor1")).catch((error) => { 
+    console.error(error); 
+  });
+</script>
+<script>
+    setInterval(myTimer, 1000);
+    function myTimer() {
+        const d = new Date();
+        let cc = document.querySelectorAll('.alert_nums');
+        cc.forEach(element => {
+            element.innerHTML -= 1
+        })
+    }
+    setInterval(()=> $(".alert").alert('close'), 6000)
+  </script>
+{% endblock js_content %}
