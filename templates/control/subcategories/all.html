@@ -9,12 +9,12 @@
 {% block add %}
 <div class="ms-auto d-block">
   <div class="btn-group">
-    <a href="{% url 'control_category_add' %}" class="btn btn-outline-primary d-block">Добавить</a>
+    <a href="{% url 'control_subcategory_add' %}" class="btn btn-outline-primary d-block">Добавить</a>
   </div>
 </div>
 {% endblock add %}
 
-{% block page_title %}Все Категории{% endblock page_title %}
+{% block page_title %}Все Подкатегории{% endblock page_title %}
 
 {% block content %}
 {% if base.code == "created" %}
@@ -23,7 +23,7 @@
     <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
     </div>
     <div class="ms-3">
-      <div class="text-white">Категория создана.</div>
+      <div class="text-white">Подкатегория создана.</div>
     </div>
   </div>
   <h3 class="alert_nums text-light align-self-center">7</h3>
@@ -34,7 +34,7 @@
     <div class="fs-3 text-white"><ion-icon name="trash-sharp"></ion-icon>
     </div>
     <div class="ms-3">
-      <div class="text-white">Категория удалено.</div>
+      <div class="text-white">Подкатегория удалено.</div>
     </div>
   </div>
   <h3 class="alert_nums text-light align-self-center">7</h3>
@@ -59,19 +59,19 @@
                           <tr>
                               <th>Название</th>
                               <th>Приоритет</th>
-                              <th>К-во Подкатегории</th>
+                              <th>Категории</th>
                               <th>К-во Наименовании</th>
                               <th>Детали</th>
                           </tr>
                       </thead>
                       <tbody>
-                          {% for category in categories %}
+                          {% for subcategory in subcategories %}
                           <tr>
-                              <td>{{ category.title_ru }}</td>
-                              <td>{{ category.priority  }}</td>
-                              <td>{{ category.total_subcategories }} </td>
-                              <td>{{ category.total_products }} </td>
-                              <td><a href="{% url 'control_category_detail' category.slug %}" class="btn btn-success btn-sm"> Изменить </a></td>
+                              <td>{{ subcategory.title_ru }}</td>
+                              <td>{{ subcategory.priority  }}</td>
+                              <td>{{ subcategory.category.title_ru }} </td>
+                              <td>{{ subcategory.total_products }} </td>
+                              <td><a href="{% url 'control_subcategory_detail' subcategory.slug %}" class="btn btn-success btn-sm"> Изменить </a></td>
                           </tr>
                           {% endfor %}
                       </tbody>

@@ -64,17 +64,16 @@
                       <th>Приоритет</th>
                       <th>Цена</th>
                       <th>Детали</th>
-                      <th>Стоп</th>
                   </tr>
               </thead>
               <tbody>
                   {% for product in products %}
                   <tr style="vertical-align: middle;" class="table{{product.id}}">
-                      <td><img height="50" width="50"  class="rounded" src="{{ product.img_min.url }}" alt="" style="object-fit: cover;"></td>
-                      <td {% if product.stoplist %} class="text-danger"{% endif %}>{{ product.title_ru }}</td>
-                      <td {% if product.stoplist %} class="text-danger"{% endif %}>{{ product.category.title_ru  }}</td>
-                      <td {% if product.stoplist %} class="text-danger"{% endif %}>{{ product.priority  }}</td>
-                      <td {% if product.stoplist %} class="text-danger"{% endif %}>{{ product.price }} UZS </td>
+                      <td><img height="50" width="50"  class="rounded" src="" alt=" product.img_min.url" style="object-fit: cover;"></td>
+                      <td>{{ product.title_ru }}</td>
+                      <td>{{ product.category.title_ru  }}</td>
+                      <td>{{ product.priority  }}</td>
+                      <td>{{ product.price }} UZS </td>
                       <td><a href="{% url 'control_products_detail' product.slug %}" class="btn btn-success btn-sm"> Изменить </a> 
                         {% if product.stoplist %}
                           <a class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Товар не видно."><ion-icon name="warning-sharp" class="m-0"></ion-icon></a>
@@ -82,13 +81,6 @@
                         <a class="btn btn-danger btn-sm d-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Товар не видно."><ion-icon name="warning-sharp" class="m-0"></ion-icon></a>
                         {% endif %}
                       </td>
-                      <td style="font-size: 22px;"> <a href="javascript:;" data-id="{{product.id}}"  class="text-danger stop"> 
-                        {% if product.stoplist %}
-                        <div class="text-success"><ion-icon name="play-circle-sharp"></ion-icon> Откр </div>
-                        {% else %}
-                        <div class="text-danger"><ion-icon name="pause-circle-sharp"></ion-icon> Cтоп</div>
-                        {% endif %}
-                      </a></td>
                   </tr>
                   {% endfor %}
               </tbody>

@@ -102,12 +102,12 @@ class SubCategory(models.Model):
 
     
     def __str__(self) -> str:
-        return f"{self.title} ({self.category.title})"
+        return f"{self.title_ru} ({self.category.title_ru})"
 
     
     @property
     def total_products(self):
-        products = Product.objects.filter(drop=False, subcategory=self,).count()
+        products = Product.objects.filter(drop=False, subcategory=self).count()
         return products
 
 
@@ -190,14 +190,23 @@ class ProductImage(models.Model):
 class Slider(models.Model):
     title_uz = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
+    content_uz = models.CharField(max_length=255)
+    content_ru = models.CharField(max_length=255)
     description_uz = models.TextField()
     description_ru = models.TextField(null=True, blank=True)
     img_min = ResizedImageField(size=[300, 300], quality=100, upload_to=f"web/sliders/700x300/",  null=True, blank=True)
     img_full = ResizedImageField(size=[1200, 500], quality=100, upload_to=f"web/sliders/1200x500/", null=True, blank=True)
+    priority = models.IntegerField()
+    slug = models.CharField(max_length=255, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return f"{self.title}"
+        return f"{self.title_ru}"
+
+    
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title_ru)
+        super(Slider, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Слайд"
@@ -223,13 +232,14 @@ class Office(models.Model):
     title_ru = models.CharField(max_length=255)
     description_uz  = models.TextField(max_length=255)
     description_ru  = models.TextField(max_length=255)
+    currency = models.CharField(max_length=255, null=True, blank=True)
     logo = ResizedImageField(size=[600, 600], quality=100, upload_to=f"control/office/")
     phone = models.IntegerField()
     email = models.CharField(max_length=255)
     
     
     def __str__(self) -> str:
-        return f"{self.title}"
+        return f"{self.title_ru}"
     
     class Meta:
         verbose_name = "Инфо"

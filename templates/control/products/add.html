@@ -16,7 +16,18 @@
 <div class="card">
     <div class="card-body">
       <div class="p-4 border rounded">
-        {% if base.code == "error" %}
+        {% if base.code == "edited" %}
+        <div class="alert alert-dismissible fade show py-2 bg-warning d-flex justify-content-between">
+          <div class="d-flex align-items-center">
+            <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
+            </div>
+            <div class="ms-3">
+              <div class="text-white">Категория изменена.</div>
+            </div>
+          </div>
+          <h3 class="alert_nums text-light align-self-center">7</h3>
+        </div>
+        {% elif base.code == "error" %}
         <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
           <div class="d-flex align-items-center">
             <div class="fs-3 text-white"><ion-icon name="close-circle-sharp"></ion-icon>
@@ -44,17 +55,33 @@
                     <input type="file" name="file" required class="form-control has-validation" accept="image/png, image/jpeg"required id="inputGroupFile02">
                   </div>
               </div>
-            <div class="col-md-12">
-              <label for="validationCustom00" class="form-label">Категория</label>
-              <select class="form-select mb-3" required name="category_id" aria-label="Default select example" id="validationCustom00">
-                {% for category in categories %}
-                  <option value="{{category.id}}">{{ category.title_ru }}</option>
-                {% endfor %}
-              </select>
-            </div>
+              <div class="col-md-12">
+                <label for="validationCustomUsername" class="form-label">Категория</label>
+                <div class="input-group has-validation"> 
+                <select class="form-select category_select" required name="category_id" aria-label="Default select example" id="validationCustom00">
+                  {% for category in categories %}
+                    <option value="{{category.id}}">{{ category.title_ru }}</option>
+                  {% endfor %}
+                </select>
+                <span class="input-group-text" id="inputGroupPrepend"><a href="javascript:;" data-bs-toggle="modal" data-bs-target="#category_add">Нет в списке ? Добавить </a></span>
+                <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <label for="validationCustomUsername" class="form-label">Подкатегория</label>
+                <div class="input-group has-validation"> 
+                <select class="form-select subcategory_select" required name="subcategory_id" aria-label="Default select example" id="validationCustom00">
+                  {% for subcategory in subcategories %}
+                    <option value="{{subcategory.id}}">{{ subcategory.title_ru }}</option>
+                  {% endfor %}
+                </select>
+                <span class="input-group-text" id="inputGroupPrepend"><a href="javascript:;" data-bs-toggle="modal" data-bs-target="#subcategory_add">Нет в списке ? Добавить </a></span>
+                <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
+                </div>
+              </div>
             <div class="col-md-12">
               <label for="validationCustom01" class="form-label">Название наименование RU</label>
-              <input type="text" name="title" class="form-control" id="validationCustom01" required>
+              <input type="text" name="title_ru" class="form-control" id="validationCustom01" required>
               <div class="invalid-feedback">Пожалуйста, введите название.</div>
             </div>
             <div class="col-md-12">
@@ -73,13 +100,29 @@
             <label for="validationCustomUsername" class="form-label">Цена</label>
             <div class="input-group has-validation"> 
               <input type="number" name="price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
-              <span class="input-group-text" id="inputGroupPrepend"></span>
+              <span class="input-group-text" id="inputGroupPrepend">{{base.office.currency}}</span>
               <div class="invalid-feedback">Пожалуйста, укажите цена наименование</div>
             </div>
           </div>
           <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Скидка</label>
+            <div class="input-group has-validation"> 
+            <select class="form-select category_select" name="discount_id" aria-label="Default select example" id="validationCustom00">
+              {% for discount in discounts %}
+                <option value="{{discount.id}}">{{ discount.title }}</option>
+              {% endfor %}
+            </select>
+            <span class="input-group-text" id="inputGroupPrepend"><a href="javascript:;" data-bs-toggle="modal" data-bs-target="#category_add">Нет в списке ? Добавить </a></span>
+            <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
+            </div>
+          </div>
+          <div class="col-md-12">
             <label for="validationCustomUsername" class="form-label">Описание RU</label>
-              <textarea id="editor" class="form-control" name="description"></textarea>
+              <textarea id="editor" class="form-control" name="description_ru"></textarea>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Описание UZ</label>
+              <textarea id="editor1" class="form-control" name="description_uz"></textarea>
           </div>
           <div class="col-12">
             <button class="btn btn-primary" type="submit">Добавить</button>
@@ -92,6 +135,97 @@
 {% endblock content %}
 
 {% block js_content %}
+<div class="col">
+  <!-- Modal -->
+  <div class="modal fade" id="category_add" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><b>Добавить новое категория</b></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert_box">
+          </div>
+          <div class="row g-3 needs-validation">
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Название категория RU</label>
+            <input type="text" name="category_title_ru" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите название.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Название категория UZ</label>
+            <input type="text" name="category_title_uz" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите название.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Приоритет</label>
+            <div class="input-group has-validation"> <span class="input-group-text" id="inputGroupPrepend">№</span>
+              <input type="number" name="category_priority" value="1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value.length > 12) {this.value = 0}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+              <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Отмена</button>
+            <button type="submit" class="btn btn-success category_add">Добавить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col">
+  <!-- Modal -->
+  <div class="modal fade" id="subcategory_add" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><b>Добавить новое подкатегория</b></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert_box_subcategory">
+          </div>
+          <div class="row g-3 needs-validation">
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Категория</label>
+            <div class="input-group has-validation"> 
+            <select class="form-select category_select" required name="subcategory_category" aria-label="Default select example" id="validationCustom00">
+              {% for category in categories %}
+                <option value="{{category.id}}">{{ category.title_ru }}</option>
+              {% endfor %}
+            </select>
+            <div class="invalid-feedback">Пожалуйста, укажите категория.</div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Название подкатегория RU</label>
+            <input type="text" name="subcategory_title_ru" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите название.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Название подкатегория UZ</label>
+            <input type="text" name="subcategory_title_uz" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите название.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Приоритет</label>
+            <div class="input-group has-validation"> <span class="input-group-text" id="inputGroupPrepend">№</span>
+              <input type="number" name="subcategory_priority" value="1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value.length > 12) {this.value = 0}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+              <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Отмена</button>
+            <button type="submit" class="btn btn-success subcategory_add">Добавить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
 <script src="{% static 'control/assets/plugins/input-tags/js/tagsinput.js' %}"></script>
 <script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
@@ -101,6 +235,138 @@
 <script src="{% static 'control/assets/plugins/fancy-file-uploader/jquery.fancy-fileupload.js' %}"></script>
 <script src="{% static 'control/assets/plugins/Drag-And-Drop/dist/imageuploadify.min.js' %}"></script>
 <script src="{% static 'control/assets/js/form-file-upload.js' %}"></script>
+
+<script>
+  let category_add = document.querySelector('.modal .category_add')
+
+  url_c = '/control/category_add/'
+  category_add.addEventListener('click', ()=>{
+    let category_title_uz = document.querySelector(".modal input[name='category_title_uz']");
+    let category_title_ru = document.querySelector(".modal input[name='category_title_ru']");
+    let category_priority = document.querySelector(".modal input[name='category_priority']");
+    if (category_title_ru.value != '' && category_title_uz.value != '' && category_priority.value != '' ){
+      fetch(url_c, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+            title_uz: category_title_uz.value,
+            title_ru: category_title_ru.value,
+            priority: category_priority.value
+        })
+        }).then(resp => resp.json()).then(
+          data => {
+            if (data.code == 200) {
+              let select_option = document.querySelectorAll('.category_select')
+              select_option[0].innerHTML += `<option value="${data.category.id}">${data.category.title_ru}</option>`
+              select_option[1].innerHTML += `<option value="${data.category.id}">${data.category.title_ru}</option>`
+              category_title_uz.value = ''
+              category_title_ru.value = ''
+              category_priority.value = 1
+              let alert_box = document.querySelector('.alert_box')
+              alert_box.innerHTML = `
+              <div class="alert alert-dismissible fade show py-2 bg-success d-flex justify-content-between">
+                <div class="d-flex align-items-center">
+                  <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
+                  </div>
+                  <div class="ms-3">
+                    <div class="text-white">Категория добавлено</div>
+                  </div>
+                </div>
+              </div>
+              `
+            }
+            else{
+              let alert_box = document.querySelector('.alert_box')
+              alert_box.innerHTML = `
+              <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
+                <div class="d-flex align-items-center">
+                  <div class="fs-3 text-white"><ion-icon name="close-circle-sharp"></ion-icon>
+                  </div>
+                  <div class="ms-3">
+                    <div class="text-white">${data.error}</div>
+                  </div>
+                </div>
+              </div>
+              `
+            }
+          }
+        )
+    } else {
+      console.log("Error");
+    }
+  })
+
+
+  let subcategory_add = document.querySelector('.modal .subcategory_add')
+
+  url = '/control/subcategory_add/'
+  subcategory_add.addEventListener('click', ()=>{
+    let subcategory_category = document.querySelector(".modal select[name='subcategory_category']");
+    console.log(subcategory_category.value);
+    let subcategory_title_uz = document.querySelector(".modal input[name='subcategory_title_uz']");
+    let subcategory_title_ru = document.querySelector(".modal input[name='subcategory_title_ru']");
+    let subcategory_priority = document.querySelector(".modal input[name='subcategory_priority']");
+    if (subcategory_title_ru.value != '' && subcategory_title_uz.value != '' && subcategory_priority.value != '' ){
+      fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+            category_id: subcategory_category.value, 
+            title_uz: subcategory_title_uz.value,
+            title_ru: subcategory_title_ru.value,
+            priority: subcategory_priority.value
+        })
+        }).then(resp => resp.json()).then(
+          data => {
+            if (data.code == 200) {
+              let select_option_subcategory = document.querySelector('.subcategory_select')
+              select_option_subcategory.innerHTML += `<option value="${data.subcategory.id}">${data.subcategory.title_ru}</option>`
+              subcategory_title_uz.value = ''
+              subcategory_title_ru.value = ''
+              subcategory_priority.value = 1
+              let alert_box = document.querySelector('.alert_box_subcategory')
+              alert_box.innerHTML = `
+              <div class="alert alert-dismissible fade show py-2 bg-success d-flex justify-content-between">
+                <div class="d-flex align-items-center">
+                  <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
+                  </div>
+                  <div class="ms-3">
+                    <div class="text-white">Подкатегория добавлено</div>
+                  </div>
+                </div>
+              </div>
+              `
+            }
+            else{
+              let alert_box = document.querySelector('.alert_box')
+              alert_box.innerHTML = `
+              <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
+                <div class="d-flex align-items-center">
+                  <div class="fs-3 text-white"><ion-icon name="close-circle-sharp"></ion-icon>
+                  </div>
+                  <div class="ms-3">
+                    <div class="text-white">${data.error}</div>
+                  </div>
+                </div>
+              </div>
+              `
+            }
+          }
+        )
+    } else {
+      console.log("Error");
+    }
+  })
+
+
+</script>
+
 
 <script>
   ClassicEditor.defaultConfig = { 

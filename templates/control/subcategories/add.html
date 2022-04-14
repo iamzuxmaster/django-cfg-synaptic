@@ -1,0 +1,215 @@
+{% extends 'control/base.html' %}
+{% load static %}
+
+{% block title %} Добавить новое категория| Yola{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'control_categories_all' %}">Категории</a></li>
+<li class="breadcrumb-item active" aria-current="page">Добавить</li>
+{% endblock breadcrumb %}
+{% block add %}
+{% endblock add %}
+
+{% block page_title %}Добавить категория {% endblock page_title %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+      <div class="p-4 border rounded">
+        {% if base.code == "error" %}
+        <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
+          <div class="d-flex align-items-center">
+            <div class="fs-3 text-white"><ion-icon name="close-circle-sharp"></ion-icon>
+            </div>
+            <div class="ms-3">
+              <div class="text-white">Есть категория с таким названием.!</div>
+            </div>
+          </div>
+          <h3 class="alert_nums text-light align-self-center">7</h3>
+        </div>
+        {% endif %}
+        <form class="row g-3 needs-validation" action="{% url 'control_subcategory_create' %}" method="POST" novalidate>
+            {% csrf_token %}
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Категория</label>
+            <div class="input-group has-validation"> 
+            <select class="form-select category_select" required name="category_id" aria-label="Default select example" id="validationCustom00">
+              {% for category in categories %}
+                <option value="{{category.id}}">{{ category.title_ru }}</option>
+              {% endfor %}
+            </select>
+            <span class="input-group-text" id="inputGroupPrepend"><a href="javascript:;" data-bs-toggle="modal" data-bs-target="#category_add">Нет в списке ? Добавить </a></span>
+            <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Название подкатегория RU</label>
+            <input type="text" name="title_ru" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите название.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Название подкатегория UZ</label>
+            <input type="text" name="title_uz" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите название.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Приоритет</label>
+            <div class="input-group has-validation"> <span class="input-group-text" id="inputGroupPrepend">№</span>
+              <input type="number" name="priority" value="1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value.length > 12) {this.value = 0}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+              <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary" type="submit">Добавить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block js_content %}
+<div class="col">
+  <!-- Modal -->
+  <div class="modal fade" id="category_add" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><b>Добавить новое категория</b></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert_box">
+          </div>
+          <div class="row g-3 needs-validation">
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Название категория RU</label>
+            <input type="text" name="category_title_ru" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите название.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Название категория UZ</label>
+            <input type="text" name="category_title_uz" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите название.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Приоритет</label>
+            <div class="input-group has-validation"> <span class="input-group-text" id="inputGroupPrepend">№</span>
+              <input type="number" name="category_priority" value="1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value.length > 12) {this.value = 0}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+              <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Отмена</button>
+            <button type="submit" class="btn btn-success category_add">Добавить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
+
+<script>
+  let category_add = document.querySelector('.modal .category_add')
+
+  url = '/control/category_add/'
+  category_add.addEventListener('click', ()=>{
+    let category_title_uz = document.querySelector(".modal input[name='category_title_uz']");
+    let category_title_ru = document.querySelector(".modal input[name='category_title_ru']");
+    let category_priority = document.querySelector(".modal input[name='category_priority']");
+    if (category_title_ru.value != '' && category_title_uz.value != '' && category_priority.value != '' ){
+      fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+            title_uz: category_title_uz.value,
+            title_ru: category_title_ru.value,
+            priority: category_priority.value
+        })
+        }).then(resp => resp.json()).then(
+          data => {
+            if (data.code == 200) {
+              let select_option = document.querySelector('.category_select')
+              select_option.innerHTML += `<option value="${data.category.id}">${data.category.title_ru}</option>`
+              category_title_uz.value = ''
+              category_title_ru.value = ''
+              category_priority.value = 1
+              let alert_box = document.querySelector('.alert_box')
+              alert_box.innerHTML = `
+              <div class="alert alert-dismissible fade show py-2 bg-success d-flex justify-content-between">
+                <div class="d-flex align-items-center">
+                  <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
+                  </div>
+                  <div class="ms-3">
+                    <div class="text-white">Категория добавлено</div>
+                  </div>
+                </div>
+              </div>
+              `
+            }
+            else{
+              let alert_box = document.querySelector('.alert_box')
+              alert_box.innerHTML = `
+              <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
+                <div class="d-flex align-items-center">
+                  <div class="fs-3 text-white"><ion-icon name="close-circle-sharp"></ion-icon>
+                  </div>
+                  <div class="ms-3">
+                    <div class="text-white">${data.error}</div>
+                  </div>
+                </div>
+              </div>
+              `
+            }
+          }
+        )
+    } else {
+      console.log("Error");
+    }
+  })
+
+
+</script>
+
+<script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+      'use strict'
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.querySelectorAll('.needs-validation')
+
+      // Loop over them and prevent submission
+      Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+</script>
+
+<script>
+    setInterval(myTimer, 1000);
+    function myTimer() {
+        const d = new Date();
+        let cc = document.querySelectorAll('.alert_nums');
+        cc.forEach(element => {
+            element.innerHTML -= 1
+        })
+    }
+    setInterval(()=> $(".alert").alert('close'), 6000)
+  </script>
+{% endblock js_content %}

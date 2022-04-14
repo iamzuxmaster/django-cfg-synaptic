@@ -7,8 +7,33 @@ urlpatterns = [
     # Categories
     path("categories/", views.control_categories_all, name="control_categories_all"),
     path("category/add/", views.control_categories_add, name="control_category_add"),
+        path("category_add/", views.control_subcategories_category_add),
         path("category/create/", views.control_categories_create, name="control_category_create"),
         path("category/edit/", views.control_categories_edit, name="control_category_edit"),
-        path("categories/delete/", views.control_categories_delete, name="control_category_delete"),
+        path("category/delete/", views.control_categories_delete, name="control_category_delete"),
     path("category/<str:slug>/", views.control_categories_detail, name="control_category_detail"),
-] 
+
+    # SubCategories 
+    path("subcategories/", views.control_subcategories_all, name="control_subcategories_all"),
+    path("subcategory/add/", views.control_subcategories_add, name="control_subcategory_add"),
+        path("subcategory_add/", views.control_products_subcategory_add),
+        path("subcategory/create/", views.control_subcategories_create, name="control_subcategory_create"),
+        path("subcategory/edit/", views.control_subcategories_edit, name="control_subcategory_edit"),
+        path("subcategory/delete/", views.control_subcategories_delete, name="control_subcategory_delete"),
+    path("subcategory/<str:slug>/", views.control_subcategories_detail, name="control_subcategory_detail"),
+
+    # Products
+    path("products/", views.control_products_all, name="control_products_all"),
+    path("product/add/", views.control_product_add, name="control_products_add"),
+        path("product/create/", views.control_product_create, name="control_products_create"),
+        path("product/edit/", views.control_product_edit, name="control_products_edit"),
+    path("product/<str:slug>/", views.control_product_detail, name="control_products_detail"),
+        # Sliders
+    path("sliders/", views.control_sliders_all, name="control_sliders_all"),
+    path("slider/add/", views.control_sliders_add, name="control_sliders_add"),
+        path("slider/create/", views.control_sliders_create, name="control_sliders_create"),
+        path("slider/edit/", views.control_sliders_edit, name="control_sliders_edit"),
+        path("slider/delete/", views.control_sliders_delete, name="control_sliders_delete"),
+    path("slider/<slug:slug>/", views.control_sliders_detail, name="control_sliders_detail"),
+
+ ]     

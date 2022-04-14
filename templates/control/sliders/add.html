@@ -21,7 +21,7 @@
             <div class="col-md-12">
                 <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-between">
                   <div class=" shadow text-center">
-                    <img src="{% static 'control/assets/images/404-error.png' %}" alt="..." class="rounded-circle" width="800" height="350px">
+                    <img src="{% static 'control/assets/images/404-error.png' %}" alt="..." style="object-fit: cover;" class="rounded" width="800" height="350px">
                   </div>
                   </div>
                         
@@ -30,9 +30,40 @@
                     <input type="file" name="file" class="form-control has-validation" accept="image/png, image/jpeg"required id="inputGroupFile02">
                   </div>
               </div>
+              <div class="col-md-12">
+                <label for="validationCustom01" class="form-label">Название слайд RU</label>
+                <input type="text" name="title_ru" class="form-control" id="validationCustom01" required>
+                <div class="invalid-feedback">Пожалуйста, введите название.</div>
+              </div>
+              <div class="col-md-12">
+                <label for="validationCustom01" class="form-label">Название слайд UZ</label>
+                <input type="text" name="title_uz" class="form-control" id="validationCustom01" required>
+                <div class="invalid-feedback">Пожалуйста, введите название.</div>
+              </div>
+              <div class="col-md-12">
+                <label for="validationCustom01" class="form-label">Контент слайд UZ</label>
+                <textarea type="text" name="content_uz" class="form-control" id="validationCustom01"></textarea>
+                <div class="invalid-feedback">Пожалуйста, введите название.</div>
+              </div>
+              <div class="col-md-12">
+                <label for="validationCustom01" class="form-label">Контент слайд RU</label>
+                <textarea type="text" name="content_ru" class="form-control" id="validationCustom01"></textarea>
+                <div class="invalid-feedback">Пожалуйста, введите название.</div>
+              </div>
             <div class="col-md-12">
-              <label for="validationCustomUsername" class="form-label">Описание</label>
-                <textarea id="editor" class="form-control" name="description">{{ product.description_ru }}</textarea>
+              <label for="validationCustomUsername" class="form-label">Описание UZ</label>
+                <textarea id="editor" class="form-control" name="description_uz">{{ product.description_uz }}</textarea>
+            </div>
+            <div class="col-md-12">
+              <label for="validationCustomUsername" class="form-label">Описание RU</label>
+                <textarea id="editor1" class="form-control" name="description_ru">{{ product.description_ru }}</textarea>
+            </div>
+            <div class="col-md-12">
+              <label for="validationCustomUsername" class="form-label">Приоритет</label>
+              <div class="input-group has-validation"> <span class="input-group-text" id="inputGroupPrepend">№</span>
+                <input type="number" name="priority" value="1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value.length > 12) {this.value = 0}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+                <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
+              </div>
             </div>
           <div class="col-12">
             <button class="btn btn-primary" type="submit">Добавить</button>
@@ -92,6 +123,9 @@
     language: 'en' 
   }; 
   ClassicEditor.create(document.querySelector("#editor")).catch((error) => { 
+    console.error(error); 
+  });
+  ClassicEditor.create(document.querySelector("#editor1")).catch((error) => { 
     console.error(error); 
   });
 </script>

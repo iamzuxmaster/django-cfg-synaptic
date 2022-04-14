@@ -110,7 +110,14 @@
             </a>
           </li>
           <li>
-            <a href="'control_products_all'">
+            <a href="{% url 'control_subcategories_all' %}">
+              <div class="parent-icon"><ion-icon name="copy-outline"></ion-icon>
+              </div>
+              <div class="menu-title">Подкатегории</div>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'control_products_all' %}">
               <div class="parent-icon"><ion-icon name="ellipse-sharp"></ion-icon>
               </div>
               <div class="menu-title">Наименование</div>
@@ -124,7 +131,7 @@
             </a>
           </li>
           <li>
-            <a href="'control_sliders_all'">
+            <a href="{% url 'control_sliders_all' %}">
               <div class="parent-icon"><ion-icon name="copy-sharp"></ion-icon>
               </div>
               <div class="menu-title">Слайдеры</div>

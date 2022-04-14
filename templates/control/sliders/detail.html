@@ -21,25 +21,13 @@
 <div class="card">
     <div class="card-body">
       <div class="p-4 border rounded">
-        {% if base.code == "edited" %}
-        <div id="alert" class="alert alert-dismissible fade show py-2 bg-warning d-flex justify-content-between">
-          <div class="d-flex align-items-center">
-            <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
-            </div>
-            <div class="ms-3">
-              <div class="text-white">Слайдер изменено.</div>
-            </div>
-          </div>
-          <h3 class="alert_nums text-light align-self-center">7</h3>
-        </div>
-        {% endif %}
         <form class="row g-3 needs-validation" action="{% url 'control_sliders_edit' %}" method="POST" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
-            <input type="hidden" name="slider_id" value="{{ slider.id }}">
+            <input type="hidden" name="slider_slug" value="{{slider.slug}}">
             <div class="col-md-12">
                 <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-between">
-                  <div class=" shadow text-center">
-                    <img src="{{ slider.img_max.url }}" alt="..." class="rounded" width="800" height="350px">
+                  <div class="shadow text-center">
+                    <img src="{{ slider.img_full.url }}" alt="{{ slider.img_full.url }}" style="object-fit: cover;" class="rounded" width="800" height="350px">
                   </div>
                   </div>
                         
@@ -48,9 +36,40 @@
                     <input type="file" name="file" class="form-control has-validation" accept="image/png, image/jpeg" id="inputGroupFile02">
                   </div>
               </div>
+              <div class="col-md-12">
+                <label for="validationCustom01" class="form-label">Название слайд UZ</label>
+                <input type="text" name="title_uz" class="form-control" id="validationCustom01" value="{{slider.title_uz}}" required>
+                <div class="invalid-feedback">Пожалуйста, введите название.</div>
+              </div>
+              <div class="col-md-12">
+                <label for="validationCustom01" class="form-label">Название слайд RU</label>
+                <input type="text" name="title_ru" class="form-control" id="validationCustom01" value="{{slider.title_ru}}" required>
+                <div class="invalid-feedback">Пожалуйста, введите название.</div>
+              </div>
+              <div class="col-md-12">
+                <label for="validationCustom01" class="form-label">Контент слайд UZ</label>
+                <textarea type="text" name="content_uz" class="form-control" id="validationCustom01">{{slider.content_uz}}</textarea>
+                <div class="invalid-feedback">Пожалуйста, введите название.</div>
+              </div>
+              <div class="col-md-12">
+                <label for="validationCustom01" class="form-label">Контент слайд RU</label>
+                <textarea type="text" name="content_ru" class="form-control" id="validationCustom01">{{slider.content_ru}}</textarea>
+                <div class="invalid-feedback">Пожалуйста, введите название.</div>
+              </div>
             <div class="col-md-12">
-              <label for="validationCustomUsername" class="form-label">Описание</label>
-                <textarea id="editor" class="form-control" name="description">{{ slider.description }}</textarea>
+              <label for="validationCustomUsername" class="form-label">Описание UZ</label>
+                <textarea id="editor" class="form-control" name="description_uz">{{ slider.description_uz }}</textarea>
+            </div>
+            <div class="col-md-12">
+              <label for="validationCustomUsername" class="form-label">Описание RU</label>
+                <textarea id="editor1" class="form-control" name="description_ru">{{ slider.description_ru }}</textarea>
+            </div>
+            <div class="col-md-12">
+              <label for="validationCustomUsername" class="form-label">Приоритет</label>
+              <div class="input-group has-validation"> <span class="input-group-text" id="inputGroupPrepend">№</span>
+                <input type="number" name="priority" value="{{ slider.priority }}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value.length > 12) {this.value = 0}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+                <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
+              </div>
             </div>
           <div class="col-12">
             <button class="btn btn-primary" type="submit">Изменить</button>
@@ -59,7 +78,6 @@
       </div>
     </div>
   </div>
-
 {% endblock content %}
 
 {% block js_content %}
@@ -83,7 +101,7 @@
           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
           <form action="{% url 'control_sliders_delete' %}" method="POST">
               {% csrf_token %}
-              <input type="hidden" name="slider_id" value="{{ slider.id }}">
+              <input type="hidden" name="slider_slug" value="{{ slider.slug }}">
               <button type="submit" class="btn btn-outline-danger delete" disabled>Удалить</button>
           </form>
         </div>
@@ -150,6 +168,9 @@
     language: 'en' 
   }; 
   ClassicEditor.create(document.querySelector("#editor")).catch((error) => { 
+    console.error(error); 
+  });
+  ClassicEditor.create(document.querySelector("#editor1")).catch((error) => { 
     console.error(error); 
   });
 </script>
