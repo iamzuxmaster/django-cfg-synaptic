@@ -12,7 +12,7 @@ class Region(models.Model):
     code = models.CharField(max_length=255)
 
     def __str__(self) -> str:
-        return f"{self.title}"
+        return f"{self.title_ru}"
     
     class Meta: 
         verbose_name = "Страна"
@@ -27,7 +27,7 @@ class Disctrict(models.Model):
     code = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.title} ({self.country.title})"
+        return f"{self.title_ru} ({self.region.title_ru})"
 
 
     class Meta: 
@@ -229,6 +229,47 @@ class Blog(models.Model):
     class Meta:
         verbose_name = "Блог"
         verbose_name_plural = "Блог"
+
+class OrderTypes(models.Model):
+    title_ru = models.CharField(max_length=255)
+    priority = models.IntegerField()
+    
+    def __str__(self) -> str:
+        return f"{self.title_ru}"
+    
+    class Meta:
+        verbose_name = "Этап заказов"
+        verbose_name_plural = "Этап заказов"
+
+class Order(models.Model): 
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    ordertypes = models.ForeignKey(OrderTypes, on_delete=models.PROTECT, null=True, blank=True)
+    address = models.TextField()
+    comment = models.TextField()
+    checkout = models.BooleanField(default=False)
+    complete = models.BooleanField(default=False)
+
+    
+    def __str__(self) -> str:
+        return f"{self.account}"
+    
+    class Meta:
+        verbose_name = "Заказ"
+        verbose_name_plural = "Заказы"
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+
+    
+    def __str__(self) -> str:
+        return f"{self.order} {self.product.title_ru}"
+    
+    class Meta:
+        verbose_name = "Товар на Заказ"
+        verbose_name_plural = "Товары на Заказ"
 
 class Office(models.Model):
     title_uz = models.CharField(max_length=255)
