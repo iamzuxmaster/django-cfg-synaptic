@@ -56,4 +56,10 @@ urlpatterns = [
         path("blog/delete/", views.control_blog_delete, name="control_blog_delete"),
     path("blog/<int:id>/", views.control_blog_detail, name="control_blog_detail"),
 
+    # Orders
+    path("orders/", views.control_orders_all, name="control_orders_all"),
+    path("orders/order/edit/", views.control_order_edit, name="control_order_edit"),
+    path("orders/ordertype/edit/", views.control_ordertype_edit, name="control_ordertype_edit"),
+    path("orders/ordertype/create/", views.control_ordertype_create, name="control_ordertype_create"),
+    path("orders/ordertype/delete/", views.control_ordertype_delete, name="control_ordertype_delete"),
  ]       

@@ -152,7 +152,7 @@ class Product(models.Model):
     price = models.IntegerField()
     available = models.BooleanField(default=True)
 
-    discount_fk = models.ForeignKey(Discount, on_delete=models.SET_NULL, null=True, blank=True)
+    discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, null=True, blank=True)
 
     drop = models.BooleanField(default=False)
     img_min = ResizedImageField(size=[300,300], quality=100, upload_to="web/products/300x300/")
@@ -217,6 +217,7 @@ class Slider(models.Model):
 class Blog(models.Model): 
     title_uz = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255, null=True, blank=True)
+    slug = models.CharField(max_length=255, null=True, blank=True)
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
     description_uz = models.TextField()
     description_ru = models.TextField(null=True, blank=True)
@@ -225,6 +226,10 @@ class Blog(models.Model):
     
     def __str__(self) -> str:
         return f"{self.title_ru}"
+        
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title_ru)
+        super(Slider, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Блог"
@@ -232,7 +237,9 @@ class Blog(models.Model):
 
 class OrderTypes(models.Model):
     title_ru = models.CharField(max_length=255)
-    priority = models.IntegerField()
+    priority = models.IntegerField(default=0)
+    color = models.CharField(max_length=255,null=True, blank=True)
+    edit = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return f"{self.title_ru}"
@@ -241,13 +248,28 @@ class OrderTypes(models.Model):
         verbose_name = "Этап заказов"
         verbose_name_plural = "Этап заказов"
 
+    @property
+    def type_orders(self):
+        return Order.objects.filter(ordertypes=self, checkout=True, complete=False)
+
+    @property
+    def type_orders_droped(self):
+        return Order.objects.filter(ordertypes=self,drop=True)
+
+    @property
+    def type_orders_completed(self):
+        return Order.objects.filter(ordertypes=self, drop=True, complete=True, checkout=True)
+
+
 class Order(models.Model): 
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     ordertypes = models.ForeignKey(OrderTypes, on_delete=models.PROTECT, null=True, blank=True)
-    address = models.TextField()
-    comment = models.TextField()
+    address = models.TextField(null=True, blank=True)
+    comment = models.TextField(null=True, blank=True)
+    ordertypes_comment = models.TextField(null=True, blank=True)
     checkout = models.BooleanField(default=False)
     complete = models.BooleanField(default=False)
+    drop = models.BooleanField(default=False)
 
     
     def __str__(self) -> str:
@@ -256,6 +278,20 @@ class Order(models.Model):
     class Meta:
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"
+
+    @property
+    def total_items(self):
+        quantities = 0
+        for orderitem in OrderItem.objects.filter(order=self):
+            quantities += orderitem.quantity
+        return quantities
+
+    @property
+    def total_price(self):
+        price = 0
+        for orderitem in OrderItem.objects.filter(order=self):
+            price += orderitem.total_price
+        return price
 
 
 class OrderItem(models.Model):
@@ -271,6 +307,11 @@ class OrderItem(models.Model):
         verbose_name = "Товар на Заказ"
         verbose_name_plural = "Товары на Заказ"
 
+    @property
+    def total_price(self): 
+        return self.product.price * self.quantity
+
+
 class Office(models.Model):
     title_uz = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
@@ -281,10 +322,19 @@ class Office(models.Model):
     phone = models.IntegerField()
     email = models.CharField(max_length=255)
     
-    
     def __str__(self) -> str:
         return f"{self.title_ru}"
     
     class Meta:
         verbose_name = "Инфо"
         verbose_name_plural = "Инфо"
+
+class OfficePhone(models.Model):
+    title = models.CharField(max_length=255)
+    phone = models.IntegerField()
+class OfficeEmail(models.Model):
+    title = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)
+class OfficeAddress(models.Model):
+    title = models.CharField(max_length=255)
+    address = models.TextField()

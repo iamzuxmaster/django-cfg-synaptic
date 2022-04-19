@@ -2,7 +2,7 @@ from itertools import product
 import json
 from unicodedata import category
 from django.shortcuts import get_object_or_404, redirect, render
-from web.models import Blog, Category, Discount, Office, Product, Slider, SubCategory
+from web.models import Blog, Category, Discount, Office, Order, OrderTypes, Product, Slider, SubCategory
 from django.http import JsonResponse
 
 
@@ -416,7 +416,12 @@ def control_product_create(request):
             price = request.POST["price"]
             img_min = request.FILES["file"]
             img_full = request.FILES["file"]
-            Product.objects.create(category=category, subcategory=subcategory, title_ru=title_ru, title_uz=title_uz, priority=priority, price=price, description_ru=description_ru, description_uz=description_uz, img_min=img_min, img_full=img_full)
+            if request.POST["discount_id"] != '0':
+                discount = get_object_or_404(Discount, id=request.POST["discount_id"])
+            else:
+                discount = None
+
+            Product.objects.create(category=category, subcategory=subcategory, title_ru=title_ru, title_uz=title_uz, priority=priority, price=price, description_ru=description_ru, description_uz=description_uz, img_min=img_min, img_full=img_full, discount=discount)
             return redirect(SECURE_PATH_ADMIN + 'products/?created')
         else: 
             return redirect(SECURE_PATH_ADMIN + 'product/add/?error')
@@ -453,6 +458,10 @@ def control_product_edit(request):
         product.description_uz = request.POST["description_uz"]
         product.priority = request.POST["priority"]
         product.price = request.POST["price"]
+        if request.POST["discount_id"] != '0':
+            product.discount = get_object_or_404(Discount, id=request.POST["discount_id"])
+        else:
+            product.discount = None
         try: 
             product.img_full = request.FILES["file"]
             product.img_min  = request.FILES["file"]
@@ -677,3 +686,57 @@ def control_blog_delete(request):
         blog = get_object_or_404(Blog, id=request.POST["blog_id"])
         blog.delete()
         return redirect(SECURE_PATH_ADMIN + "blogs/?deleted")
+
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+# Orders
+
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+def control_orders_all(request): 
+    ordertypes = OrderTypes.objects.all()
+    context = {
+        "base": base_context(request=request),
+        "ordertypes": ordertypes
+    }
+    return render(request, "control/orders/all.html", context)
+
+def control_order_edit(request): 
+    data = json.loads(request.body)
+    order = Order.objects.get(id=data["order_id"])
+    ordertype = OrderTypes.objects.get(id=data["ordertype_id"])
+    order.ordertypes = ordertype
+    order.save()
+    answer = {
+        "code": 200
+    }
+    return JsonResponse(answer, safe=False)
+
+def control_ordertype_edit(request):
+    data = json.loads(request.body)
+    ordertype = OrderTypes.objects.get(id=data["ordertype_id"])
+    ordertype.title_ru = data["title_ru"]
+    ordertype.save()
+    answer = {
+        "code": 200, 
+        "ordertype": {"id": ordertype.id, "title_ru": ordertype.title_ru}
+    }
+    return JsonResponse(answer, safe=False)
+
+def control_ordertype_create(request):
+    data = json.loads(request.body)
+    ordertype = OrderTypes.objects.create(title_ru=data["title_ru"])
+    ordertype.save()
+    answer = {
+        "code": 200, 
+        "ordertype": {"id": ordertype.id, "title_ru": ordertype.title_ru}
+    }
+    return JsonResponse(answer, safe=False)
+
+def control_ordertype_delete(request):
+    data = json.loads(request.body)
+    ordertype = OrderTypes.objects.get(id=data["ordertype_id"])
+    ordertype.delete()
+    answer = {
+        "code": 200
+    }
+    return JsonResponse(answer, safe=False)
