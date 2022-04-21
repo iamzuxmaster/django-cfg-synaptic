@@ -1,8 +1,7 @@
-from itertools import product
 import json
 from unicodedata import category
 from django.shortcuts import get_object_or_404, redirect, render
-from web.models import Blog, Category, Discount, Office, Order, OrderTypes, Product, Slider, SubCategory
+from .models import Blog, Category, Discount, Office, Order, OrderTypes, Product, Slider, SubCategory
 from django.http import JsonResponse
 
 
@@ -740,3 +739,9 @@ def control_ordertype_delete(request):
         "code": 200
     }
     return JsonResponse(answer, safe=False)
+
+def control_aboutus(request):
+    context = {
+        "base": base_context(request=request),
+    }
+    return render(request, "control/aboutus/about.html", context)

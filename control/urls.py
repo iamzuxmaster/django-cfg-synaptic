@@ -62,4 +62,7 @@ urlpatterns = [
     path("orders/ordertype/edit/", views.control_ordertype_edit, name="control_ordertype_edit"),
     path("orders/ordertype/create/", views.control_ordertype_create, name="control_ordertype_create"),
     path("orders/ordertype/delete/", views.control_ordertype_delete, name="control_ordertype_delete"),
+    
+    path("aboutus/", views.control_aboutus, name="control_aboutus"),
+    path("aboutus/edit/", views.control_aboutus, name="control_about_edit")
  ]       
