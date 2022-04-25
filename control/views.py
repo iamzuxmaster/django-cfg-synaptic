@@ -1,11 +1,15 @@
 import json
 from unicodedata import category
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import Blog, Category, Discount, Office, Order, OrderTypes, Product, Slider, SubCategory
-from django.http import JsonResponse
+from .models import Blog, Category, Discount, Office, OfficeAddress, Order, OrderTypes, Product, Slider, SubCategory
+from django.http import HttpRequest, JsonResponse
 
 
 SECURE_PATH_ADMIN = '/control/'
+
+def test(request):
+    context ={}
+    return render(request, "control/test.html", context)
 
 def base_context(request):
     try: 
@@ -345,11 +349,13 @@ def control_products_all(request):
 def control_product_add(request):
     categories = Category.objects.all()
     subcategories = SubCategory.objects.all()
+    discounts = Discount.objects.all()
+
     context = {
         "base": base_context(request=request),
         "categories": categories,
         "subcategories": subcategories,
-        
+        "discounts": discounts        
     }
     return render(request, "control/products/add.html", context)
 
@@ -686,6 +692,13 @@ def control_blog_delete(request):
         blog.delete()
         return redirect(SECURE_PATH_ADMIN + "blogs/?deleted")
 
+
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+# Aboutus
+
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 # Orders
@@ -741,7 +754,42 @@ def control_ordertype_delete(request):
     return JsonResponse(answer, safe=False)
 
 def control_aboutus(request):
+    office, office_created = Office.objects.get_or_create(id=1)
+    aboutus_address = OfficeAddress.objects.all()
     context = {
         "base": base_context(request=request),
+        "about": office,
+        "aboutus_address": aboutus_address
     }
     return render(request, "control/aboutus/about.html", context)
+
+def control_aboutus_edit(request: HttpRequest):
+    if request.method == "POST" or request.FILES["file"]: 
+        title_ru = request.POST["title_ru"]
+        description_ru = request.POST["description_ru"]
+        description_uz = request.POST["description_uz"]
+        map = request.POST["map"]
+        currency = request.POST["currency"]
+        office, office_created = Office.objects.get_or_create(id=1)
+        office.title_ru = title_ru
+        office.description_ru = description_ru
+        office.description_uz = description_uz
+        office.map = map
+        office.currency = currency
+        try: 
+            office.logo = request.FILES["file"]
+        except:
+            pass
+        office.save()
+    return redirect(SECURE_PATH_ADMIN + 'aboutus/?edited')
+
+def control_aboutus_address_add(request: HttpRequest):
+    if request.method == "POST":
+        address = OfficeAddress.objects.create(address=request.POST["address"])
+        try:
+            address.title=request.POST["title_ru"]
+        except:
+            pass
+        address.save()
+
+    return redirect(SECURE_PATH_ADMIN + 'aboutus/?address_edited')

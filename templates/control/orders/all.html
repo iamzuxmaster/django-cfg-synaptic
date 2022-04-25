@@ -15,6 +15,7 @@
 </div>
 {% endblock add %}
 
+{% block page_title %}Все Заказы{% endblock page_title %}
 
 {% block content %}
 <div class="row row-cols-1 row-cols-lg-3 add">
@@ -39,8 +40,6 @@
      {% endfor %}
      
 
-
-     {% if request.user.account == 'admin' %}
      <div class="col">
       <div class="card">
         <div class="card-body bg-danger">
@@ -71,7 +70,6 @@
        </div>
      </div>
    </div>
-   {% endif %}
 </div>
 
 

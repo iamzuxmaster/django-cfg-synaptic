@@ -313,14 +313,14 @@ class OrderItem(models.Model):
 
 
 class Office(models.Model):
-    title_uz = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
     description_uz  = models.TextField(max_length=255)
     description_ru  = models.TextField(max_length=255)
-    currency = models.CharField(max_length=255, null=True, blank=True)
+    currency = models.CharField(max_length=255, null=True, blank=True, default="UZS")
+    map = models.TextField(null=True, blank=True)
     logo = ResizedImageField(size=[600, 600], quality=100, upload_to=f"control/office/")
-    phone = models.IntegerField()
-    email = models.CharField(max_length=255)
+    phone = models.IntegerField(null=True, blank=True)
+    email = models.CharField(max_length=255, blank=True, null=True)
     
     def __str__(self) -> str:
         return f"{self.title_ru}"
@@ -333,7 +333,6 @@ class Contact(models.Model):
     fio = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
     message = models.TextField()
-
     
 
 class OfficePhone(models.Model):
@@ -343,5 +342,5 @@ class OfficeEmail(models.Model):
     title = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
 class OfficeAddress(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, null=True, blank=True)
     address = models.TextField()

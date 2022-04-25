@@ -107,10 +107,10 @@
           <div class="col-md-12">
             <label for="validationCustomUsername" class="form-label">Скидка</label>
             <div class="input-group has-validation"> 
-            <select class="form-select category_select" name="discount_id" aria-label="Default select example" id="validationCustom00">
+            <select class="form-select discount_select" name="discount_id" aria-label="Default select example" id="validationCustom00">
               <option value="0"></option>
               {% for discount in discounts %}
-                <option value="{{discount.id}}">{{ discount.title }}</option>
+                <option value="{{discount.id}}">{{ discount.title }} {{ discount.unit }}</option>
               {% endfor %}
             </select>
             <span class="input-group-text" id="inputGroupPrepend"><a href="javascript:;" data-bs-toggle="modal" data-bs-target="#discount_add">Нет в списке ? Добавить </a></span>

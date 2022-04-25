@@ -1,8 +1,9 @@
 from django.urls import path 
 from . import views
-
+from .api import api as control_api
 urlpatterns = [
     path("", views.control_index, name="control_index"),
+    path("api/", control_api.urls),
     
     # Categories
     path("categories/", views.control_categories_all, name="control_categories_all"),
@@ -64,5 +65,6 @@ urlpatterns = [
     path("orders/ordertype/delete/", views.control_ordertype_delete, name="control_ordertype_delete"),
     
     path("aboutus/", views.control_aboutus, name="control_aboutus"),
-    path("aboutus/edit/", views.control_aboutus, name="control_about_edit")
- ]       
+    path("aboutus/edit/", views.control_aboutus_edit, name="control_aboutus_edit"),
+    path("aboutus/address/add/", views.control_aboutus_address_add, name="control_aboutus_address_add")
+ ]      
