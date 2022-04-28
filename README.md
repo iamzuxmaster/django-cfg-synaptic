@@ -1,4 +1,4 @@
-**MAIN Version: 1.0.3**
+**MAIN Version: 1.0.3 Orders Not Stable**
 
 **1.0.0**: [ _28.03.2022_  ]
 - Released
@@ -18,4 +18,5 @@
 - Added LOGO DJ-CFG-SYN
 - added logout account 
 - fixed answer404's
+- telegram_lang
 - updated requeirements.txt 
