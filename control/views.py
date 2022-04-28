@@ -489,7 +489,15 @@ def control_product_edit(request):
 
         else: 
             product.save()
-            return redirect(SECURE_PATH_ADMIN + f"product/{product.slug}/?error")
+            return redirect(SECURE_PATH_ADMIN + f"product/{product.slug}/?error"),
+    
+    else: 
+        answer = {
+            "code": 404,
+            "error": "Page Not Found"
+        }
+        return JsonResponse(answer, safe=False)
+
         
 def control_product_delete(request):
     if request.method == "POST":
@@ -688,7 +696,15 @@ def control_blog_edit(request):
         else:
             blog.title_ru = request.POST["title_ru"]
             blog.save()
-            return redirect(SECURE_PATH_ADMIN+f"blog/{blog.id}/?edited")
+            return redirect(SECURE_PATH_ADMIN+f"blog/{blog.id}/?edited"),
+    
+    else: 
+        answer = {
+            "code": 404,
+            "error": "Page Not Found"
+        }
+        return JsonResponse(answer, safe=False)
+
 
 
 def control_blog_delete(request):
@@ -696,6 +712,14 @@ def control_blog_delete(request):
         blog = get_object_or_404(Blog, id=request.POST["blog_id"])
         blog.delete()
         return redirect(SECURE_PATH_ADMIN + "blogs/?deleted")
+    
+    else: 
+        answer = {
+            "code": 404,
+            "error": "Page Not Found"
+        }
+        return JsonResponse(answer, safe=False)
+
 
 
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -790,6 +814,14 @@ def control_accounts_create(request:HttpRequest):
             user.save()
         else:
             return redirect(SECURE_PATH_ADMIN + 'account/add/?already')
+    
+    else: 
+        answer = {
+            "code": 404,
+            "error": "Page Not Found"
+        }
+        return JsonResponse(answer, safe=False)
+
     return redirect(SECURE_PATH_ADMIN + 'accounts/?added')
 
 
@@ -823,6 +855,13 @@ def control_accounts_edit(request:HttpRequest):
         user.account.phone = mobile
         user.account.save()
         user.save()
+    else: 
+        answer = {
+            "code": 404,
+            "error": "Page Not Found"
+        }
+        return JsonResponse(answer, safe=False)
+
     return redirect(SECURE_PATH_ADMIN + f'account/{user.username}/?edited')
 
 def control_accounts_delete(request:HttpRequest):
@@ -859,6 +898,13 @@ def control_aboutus_edit(request: HttpRequest):
         except:
             pass
         office.save()
+    else: 
+        answer = {
+            "code": 404,
+            "error": "Page Not Found"
+        }
+        return JsonResponse(answer, safe=False)
+
     return redirect(SECURE_PATH_ADMIN + 'aboutus/?edited')
 
 def control_aboutus_address_add(request: HttpRequest):
@@ -869,5 +915,12 @@ def control_aboutus_address_add(request: HttpRequest):
         except:
             pass
         address.save()
+    else: 
+        answer = {
+            "code": 404,
+            "error": "Page Not Found"
+        }
+        return JsonResponse(answer, safe=False)
+
 
     return redirect(SECURE_PATH_ADMIN + 'aboutus/?address_edited')

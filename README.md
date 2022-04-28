@@ -11,4 +11,11 @@
 - Added Orders
 
 **1.0.3** [  _28.04.2022_ ]
-- added Django-Dramatiq configs, about US, django-ninja api framework configs, Added reset password, accounts,  Added LOGO DJ-CFG-SYN, added logout account
+- added Django-Dramatiq configs,
+- about US,
+- django-ninja api framework configs 
+- reset password, accounts 
+- Added LOGO DJ-CFG-SYN
+- added logout account 
+- fixed answer404's
+- updated requeirements.txt 
