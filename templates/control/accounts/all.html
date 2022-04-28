@@ -66,10 +66,10 @@
                       <tbody>
                           {% for account in accounts %}
                           <tr>
-                              <td>{{ account.fio }}</td>
+                              <td>{{ account.user.first_name }}</td>
                               <td>{{ account.user.email  }}</td>
                               <td>{{ account.phone }} </td>
-                              <td><a href="{% url 'control_accounts_detail' account.id %}" class="btn btn-success btn-sm"> Изменить </a></td>
+                              <td><a href="{% url 'control_accounts_detail' account.user.username %}" class="btn btn-success btn-sm"> Изменить </a></td>
                           </tr>
                           {% endfor %}
                       </tbody>

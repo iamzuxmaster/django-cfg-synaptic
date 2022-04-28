@@ -145,7 +145,7 @@
         <div class="sidebar-header">
           
           <div>
-            <h2 class="logo-text">{{ base.vendor.title}}</h2>
+            <h2 class="logo-text">{{ base.office.title_ru }}</h2>
           </div>
           <div class="toggle-icon ms-auto"><ion-icon name="menu-sharp"></ion-icon>
           </div>
@@ -215,9 +215,9 @@
               <div class="menu-title">Натройки</div>
             </a>
             <ul>
-              <li> <a href=""><ion-icon name="person-circle-sharp"></ion-icon>Пользователи</a>
+              <li> <a href="{% url 'control_accounts' %}"><ion-icon name="person-circle-sharp"></ion-icon>Пользователи</a>
               </li>
-              <li> <a href="{% url 'control_aboutus' %}"><ion-icon name="information-circle-sharp"></ion-icon>О Нас</a>
+              <li> <a href="{% url 'control_aboutus' %}"><ion-icon name="information-circle-sharp"></ion-icon>Информации</a>
               </li>
             </ul>
           </li>
@@ -239,7 +239,7 @@
               <div class="mobile-menu-button"><ion-icon name="menu-sharp"></ion-icon></div>
 
                   <h3 class="mt-2 admin-clock">---</h3>
-                  
+
              
              <div class="top-navbar-right ms-auto">
 

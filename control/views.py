@@ -1,7 +1,7 @@
 import json
 from unicodedata import category
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import Blog, Category, Discount, Office, OfficeAddress, Order, OrderTypes, Product, Slider, SubCategory
+from .models import Account, Blog, Category, Discount, Office, OfficeAddress, Order, OrderTypes, Product, Slider, SubCategory, User
 from django.http import HttpRequest, JsonResponse
 
 
@@ -752,6 +752,79 @@ def control_ordertype_delete(request):
         "code": 200
     }
     return JsonResponse(answer, safe=False)
+
+def control_accounts(request:HttpRequest):
+    accounts = Account.objects.all()
+    context = {
+        "base": base_context(request),
+        "accounts": accounts
+    }
+    return render(request, "control/accounts/all.html", context)
+
+def control_accounts_add(request:HttpRequest):
+    context = {
+        "base": base_context(request),
+    }
+    return render(request, "control/accounts/add.html", context)
+
+def control_accounts_create(request:HttpRequest):
+    if request.method == 'POST': 
+        if request.POST["login"] not in list(map(lambda user: user.username, User.objects.all())):    
+            login = request.POST["login"]
+            role = request.POST["role"]
+            fio = request.POST["fio"]
+            email = request.POST["email"]
+            mobile = request.POST["phone"]
+            password = request.POST["password"]
+            user = User.objects.create_user(username=login, password=password)
+            user.account.role = role
+            user.first_name = fio
+            user.email = email
+            user.account.phone = mobile
+            user.account.save()
+            user.save()
+        else:
+            return redirect(SECURE_PATH_ADMIN + 'account/add/?already')
+    return redirect(SECURE_PATH_ADMIN + 'accounts/?added')
+
+
+
+def control_accounts_detail(request: HttpRequest, login):
+    account = Account.objects.get(user__username=login)
+    roles = [
+        {"title": 'Модератор', "role": 'moderator'},
+        {"title": 'Админстратор', "role": 'admin'},
+    ]
+    context = {
+        "base": base_context(request),
+        "account": account,
+        "roles": roles
+    }
+    return render(request, "control/accounts/detail.html", context)
+
+
+
+def control_accounts_edit(request:HttpRequest):
+    if request.method == 'POST': 
+        login = request.POST["login"]
+        role = request.POST["role"]
+        fio = request.POST["fio"]
+        email = request.POST["email"]
+        mobile = request.POST["phone"]
+        user = User.objects.get(username=login)
+        user.account.role = role
+        user.first_name = fio
+        user.email = email
+        user.account.phone = mobile
+        user.account.save()
+        user.save()
+    return redirect(SECURE_PATH_ADMIN + f'account/{user.username}/?edited')
+
+def control_accounts_delete(request:HttpRequest):
+    if request.method == "POST": 
+        user = User.objects.get(username=request.POST["username"])
+        user.delete()
+    return redirect(SECURE_PATH_ADMIN + 'accounts/?deleted')
 
 def control_aboutus(request):
     office, office_created = Office.objects.get_or_create(id=1)

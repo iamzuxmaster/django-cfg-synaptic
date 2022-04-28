@@ -37,13 +37,13 @@ class Disctrict(models.Model):
 
 
 class Account(models.Model): 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.IntegerField(null=True, blank=True)
     roles = [
         ("client", "Client"),
         ("moderator", "Moderator-Admin"),
         ("admin", "Controller"),
-        ("superadmin", "SuperAdmin")
+        ("superadmin", "SuperAdmin"),
     ]
     role = models.CharField(max_length=255, choices=roles)
     telegram_id = models.IntegerField(null=True, blank=True)

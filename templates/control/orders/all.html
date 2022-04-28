@@ -26,12 +26,12 @@
          <div class="card-header d-flex justify-content-between"><h5>{{ order_type.title_ru }}</h5><a href="javascript:;" class="edit_ordertype" data-id="{{order_type.id}}"><ion-icon name="create-outline" class="m-0" style="font-size: 20px;"></ion-icon></a></div>
          <div class="card-item mt-2 cards-zone" style="padding: 20px;" id="c_ordertype_{{order_type.id}}">
              {% for order in order_type.type_orders %}
-             <div class="card card-orders" draggable="true" id="c_order_{{order.id}}">
+             <div class="card card-orders" style="padding: 20px;"  draggable="true" id="c_order_{{order.id}}">
                <div class="d-flex justify-content-between bg-primary p-2 rounded">
                  <div class="text-light">{{ order.account.user.username }}</div>
                  <div class="text-light">{{ order.total_items }} x {{ order.total_price }} {{ base.office.currency }}</div>
                 </div>
-             </div>
+              </div>
              {% endfor %}
          </div>
         </div>
@@ -71,7 +71,6 @@
      </div>
    </div>
 </div>
-
 
 
    <div class="col">
@@ -237,7 +236,7 @@
                                     }
                                     else{}
                                 }
-                                                            )
+                                                          )
                     }
                 } catch { }
               }   

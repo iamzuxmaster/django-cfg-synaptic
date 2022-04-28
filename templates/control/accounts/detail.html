@@ -46,10 +46,32 @@
         {% endif %}
         <form class="row g-3 needs-validation" action="{% url 'control_accounts_edit' %}" method="POST" novalidate>
             {% csrf_token %}
-            <input type="hidden" name="id" value="{{ account.id }}">
+            <input type="hidden" name="login" value="{{ account.user.username }}">
+            
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Логин <sup class="text-danger">*</sup></label>
+            <input type="text"  disabled class="form-control" value="{{account.user.username}}" required>
+            <div class="invalid-feedback">Пожалуйста, введите Логин для вход.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Роль</label>
+            <div class="input-group has-validation"> 
+            <select class="form-select" required name="role" id="validationCustom00">
+             
+              {% for role in roles %}
+                {% if account.role == role.role %}
+                  <option value="{{role.role}}" selected>{{ role.title }}</option>
+                {% else %}
+                  <option value="{{role.role}}">{{ role.title }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+            <div class="invalid-feedback">Пожалуйста, укажите роль.</div>
+            </div>
+          </div>
           <div class="col-md-12">
             <label for="validationCustom01" class="form-label">ФИО <sup class="text-danger">*</sup></label>
-            <input type="text" name="fio" value="{{ account.fio }}" class="form-control" id="validationCustom01" required>
+            <input type="text" name="fio" value="{{ account.user.first_name }}" class="form-control" id="validationCustom01" required>
             <div class="invalid-feedback">Пожалуйста, введите Фамилия Имя Отчество.</div>
           </div>
           <div class="col-md-12">
@@ -62,13 +84,6 @@
             <div class="input-group has-validation"> <span class="input-group-text" id="inputGroupPrepend">+</span>
               <input type="number" value="{{ account.phone }}" name="phone" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value.length > 16) {this.value = 0}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
               <div class="invalid-feedback">Пожалуйста, укажите номер телефона.</div>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <label for="validationCustomUsername" class="form-label">Пароль <sup class="text-danger">*</sup></label>
-            <div class="input-group has-validation">
-              <input type="password" name="password" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value.length > 16) {this.value = 0}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend">
-              <div class="invalid-feedback">Пожалуйста, укажите пароль не менее 6 цифров</div>
             </div>
           </div>
           <div class="col-12">
@@ -102,7 +117,7 @@
           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
           <form action="{% url 'control_accounts_delete' %}" method="POST">
               {% csrf_token %}
-              <input type="hidden" name="account_id" value="{{account.id}}">
+              <input type="hidden" name="username" value="{{account.user.username}}">
               <button type="submit" class="btn btn-outline-danger delete" disabled>Удалить</button>
           </form>
         </div>

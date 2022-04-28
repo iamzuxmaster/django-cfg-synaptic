@@ -9,3 +9,6 @@
 
 **1.0.2** [  _14.04.2022_ ]
 - Added Orders
+
+**1.0.3** [  _28.04.2022_ ]
+-added Django-Dramatiq configs, about US, django-ninja api framework configs, Added reset password, accounts, aboutus, Added 
