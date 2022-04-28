@@ -7,9 +7,19 @@
 <li class="breadcrumb-item active" aria-current="page">Категории</li>
 {% endblock breadcrumb %}
 {% block add %}
+<style>
+  .transition-fade {
+    transition: 0.4s;
+    opacity: 1;
+  }
+  
+  html.is-animating .transition-fade {
+    opacity: 0;
+  }
+</style>
 <div class="ms-auto d-block">
   <div class="btn-group">
-    <a href="{% url 'control_category_add' %}" class="btn btn-outline-primary d-block">Добавить</a>
+    <a href="add.html" class="btn btn-outline-primary d-block transition-fade" >Добавить</a>
   </div>
 </div>
 {% endblock add %}
@@ -18,6 +28,7 @@
 
 {% block content %}
 {% if base.code == "created" %}
+<div class="transition-fade" id="swup">
 <div class="alert alert-dismissible fade show py-2 bg-success d-flex justify-content-between">
   <div class="d-flex align-items-center">
     <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
@@ -79,7 +90,9 @@
               </div>
           </div>
       </div>
-{% endblock content %}
+</div>
+
+      {% endblock content %}
 
 
 {% block js_content %}
@@ -87,8 +100,19 @@
 <script src="{% static 'control/assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'control/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
 <script src="{% static 'control/assets/js/table-datatable.js' %}"></script>
+<script src="{% static 'control/assets/plugins/swup/swup.min.js' %}"></script>
 
-
+<script>
+  const swup = new Swup()
+</script>
+<script>
+const options = {
+  requestHeaders: {
+    "X-Requested-With": "swup", // so we can tell request comes from swup
+    Accept: "text/html, application/xhtml+xml" // to explicitly define what response we are expecting
+  }
+};
+</script>
 <script>
   
   setInterval(myTimer, 1000);

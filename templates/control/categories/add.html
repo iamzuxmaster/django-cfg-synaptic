@@ -13,7 +13,7 @@
 {% block page_title %}Добавить категория {% endblock page_title %}
 
 {% block content %}
-<div class="card">
+<div class="card transition-fade" id="swup">
     <div class="card-body">
       <div class="p-4 border rounded">
         {% if base.code == "error" %}
@@ -54,7 +54,6 @@
       </div>
     </div>
   </div>
-
 {% endblock content %}
 
 {% block js_content %}

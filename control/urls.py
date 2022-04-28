@@ -1,6 +1,7 @@
 from django.urls import path 
 from . import views
 from .api import api as control_api
+
 urlpatterns = [
     path("", views.control_index, name="control_index"),
     path("api/", control_api.urls),

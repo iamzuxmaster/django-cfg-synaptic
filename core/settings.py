@@ -13,10 +13,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django_dramatiq',
+    'django_dramatiq',
     # 'django_hosts',
     'web.apps.WebConfig',
-    'control.apps.ControlConfig'
+    'control.apps.ControlConfig',
+    'reset.apps.ResetConfig'
 ]
 
 MIDDLEWARE = [
@@ -116,21 +117,25 @@ STATICFILES_DIRS = [
 # DEFAULT_HOST = 'www'
 
 # ? Dramatiq with Redis
-# DRAMATIQ_BROKER = {
-#     "BROKER": "dramatiq.brokers.redis.RedisBroker",
-#     "OPTIONS": {
-#         "url": "redis://localhost:6379",
-#     },
-#     "MIDDLEWARE": [
-#         "dramatiq.middleware.Prometheus",
-#         "dramatiq.middleware.AgeLimit",
-#         "dramatiq.middleware.TimeLimit",
-#         "dramatiq.middleware.Callbacks",
-#         "dramatiq.middleware.Retries",
-#         "django_dramatiq.middleware.DbConnectionsMiddleware",
-#         "django_dramatiq.middleware.AdminMiddleware",
-#     ]
-# }
+DRAMATIQ_BROKER = {
+    "BROKER": "dramatiq.brokers.redis.RedisBroker",
+    "OPTIONS": {
+        "url": "redis://localhost:6379",
+    },
+    "MIDDLEWARE": [
+        "dramatiq.middleware.Prometheus",
+        "dramatiq.middleware.AgeLimit",
+        "dramatiq.middleware.TimeLimit",
+        "dramatiq.middleware.Callbacks",
+        "dramatiq.middleware.Retries",
+        "django_dramatiq.middleware.DbConnectionsMiddleware",
+        "django_dramatiq.middleware.AdminMiddleware",
+    ]
+}
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+SMTP_SSL = "smtp.gmail.com"
+SMTP_PORT = 465
+SMTP_LOGIN = "sardorbeksabitovich@gmail.com" 
+SMTP_PASSWORD = "40221533"

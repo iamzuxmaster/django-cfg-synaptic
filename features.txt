@@ -1,7 +1,0 @@
-Discount = not list 
-Orders CRM 
-About US office
-user_passes_test
-User_add
-img width height
-request.method == POST larni tekshirish.
