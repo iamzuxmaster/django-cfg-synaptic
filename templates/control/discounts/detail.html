@@ -21,30 +21,6 @@
 <div class="card">
     <div class="card-body">
       <div class="p-4 border rounded">
-        {% if base.code == "edited" %}
-        <div class="alert alert-dismissible fade show py-2 bg-warning d-flex justify-content-between">
-          <div class="d-flex align-items-center">
-            <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
-            </div>
-            <div class="ms-3">
-              <div class="text-white">Категория изменена.</div>
-            </div>
-          </div>
-          <h3 class="alert_nums text-light align-self-center">7</h3>
-        </div>
-        {% elif base.code == "error" %}
-        <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
-          <div class="d-flex align-items-center">
-            <div class="fs-3 text-white"><ion-icon name="close-circle-sharp"></ion-icon>
-            </div>
-            <div class="ms-3">
-              <div class="text-white">Есть наименование с таким названием.!</div>
-            </div>
-          </div>
-          <h3 class="alert_nums text-light align-self-center">7</h3>
-        </div>
-        {% endif %}
-
 
         <form class="row g-3 needs-validation" action="{% url 'control_discount_edit' %}" method="POST" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
@@ -55,7 +31,7 @@
               <div class="invalid-feedback">Пожалуйста, введите название.</div>
             </div>
           <div class="col-md-12">
-            <label for="validationCustomUsername" class="form-label">Цена</label>
+            <label for="validationCustomUsername" class="form-label">Процент</label>
             <div class="input-group has-validation"> 
               <input type="number" value="{{discount.unit}}" name="unit" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value > 100){this.value=100}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
               <span class="input-group-text" id="inputGroupPrepend">%</span>

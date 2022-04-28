@@ -5,7 +5,8 @@ from .api import api as control_api
 urlpatterns = [
     path("", views.control_index, name="control_index"),
     path("api/", control_api.urls),
-    
+    path("logout/", views.log_out, name="control_logout"),
+
     # Categories
     path("categories/", views.control_categories_all, name="control_categories_all"),
     path("category/add/", views.control_categories_add, name="control_category_add"),

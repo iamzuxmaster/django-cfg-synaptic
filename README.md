@@ -1,4 +1,4 @@
-**MAIN Version: 1.0.2**
+**MAIN Version: 1.0.3**
 
 **1.0.0**: [ _28.03.2022_  ]
 - Released
@@ -11,4 +11,4 @@
 - Added Orders
 
 **1.0.3** [  _28.04.2022_ ]
--added Django-Dramatiq configs, about US, django-ninja api framework configs, Added reset password, accounts, aboutus, Added 
+- added Django-Dramatiq configs, about US, django-ninja api framework configs, Added reset password, accounts,  Added LOGO DJ-CFG-SYN, added logout account

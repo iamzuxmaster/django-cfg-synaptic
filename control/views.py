@@ -1,6 +1,7 @@
 import json
 from unicodedata import category
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth import authenticate, logout
 from .models import Account, Blog, Category, Discount, Office, OfficeAddress, Order, OrderTypes, Product, Slider, SubCategory, User
 from django.http import HttpRequest, JsonResponse
 
@@ -10,6 +11,10 @@ SECURE_PATH_ADMIN = '/control/'
 def test(request):
     context ={}
     return render(request, "control/test.html", context)
+
+def log_out(request):
+    logout(request)
+    return redirect(SECURE_PATH_ADMIN)
 
 def base_context(request):
     try: 
