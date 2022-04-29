@@ -22,9 +22,9 @@
 - updated requeirements.txt 
 
 **1.0.31** [  _29.04.2022_ ]
-- added
-- Office.category_imgs,
+- added Office.category_imgs,
 - Product.available, 
 - product.productimage,
 - fixed logout,
 - added login
+- trash JS Files
