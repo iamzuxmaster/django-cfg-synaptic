@@ -18,82 +18,82 @@
 
 {% block content %}
 
-        <div class="row">
+<div class="row">
 
-            <!-- @@@@@@@@@ About Start @@@@@@@@@@@@@@ -->
-            <div class="col-12">
-              <div class="card radius-10 w-100 p-4">
-                {% if base.code == "edit" %}
-                <div class="alert alert-dismissible fade show py-2 bg-warning d-flex justify-content-between">
-                  <div class="d-flex align-items-center">
-                    <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
-                    </div>
-                    <div class="ms-3">
-                      <div class="text-white">Информация о нас изменилась</div>
-                    </div>
-                  </div>
-                  <h3 class="alert_nums text-light align-self-center">7</h3>
-                </div>
-                {% endif %}
-                <form action="{% url 'control_aboutus_edit' %}" method="POST" class="needs-validation" novalidate="" enctype="multipart/form-data">
-                {% csrf_token %} 
-                <div class="card-body">
-                  <div class="row g-3 mt-2 align-items-center d-flex">
-                    <div class="col-md-12">
-                      <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-between">
-                        <div class=" shadow text-center">
-                          {% if about.logo %}
-                              <a><label for="logofile"><img src="{{about.logo.url}}" alt="..." class="" height="300" width="300" style="cursor: pointer;"></label></a>
-                              <input type="file" name="file" class="form-control has-validation d-none" accept="image/png, image/jpeg" id="logofile">
-                            {% else %}
-                              <a><label for="logofile"><img src="{% static 'control/assets/images/anata.png' %}" alt="..." class="" height="300" width="300" style="cursor: pointer;"></label></a>
-                              <input type="file" name="file" class="form-control has-validation d-none" accept="image/png, image/jpeg" id="logofile">
-                          {% endif %}
-                        </div>
-                        </div>
-                        <div class="input-group has-validation mb-3">
-                        </div>
-                    </div>
-                    <div class="col-12">
-                      <div class="mb-3">
-                        <h5 class="mb-3">Название Компание</h5>
-                        <input type="text" name="title_ru" value="{{ about.title_ru }}" class="form-control has-validation" required="">
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <div class="mb-3">
-                        <h5 class="mb-3">Ссылка на карту</h5>
-                        <input type="text" name="map" value="{{ about.map }}" class="form-control has-validation">
-                      </div>
-                  </div>
-                  
-                  <div class="col-6">
-                    <div class="mb-3">
-                      <h5 class="mb-3">Валюта</h5>
-                      <input type="text" name="currency" value="{{ about.currency }}" class="form-control has-validation">
-                    </div>
-                </div>
-                  <div class="col-md-12">
-                    <label for="validationCustomUsername" class="form-label">Описание RU</label>
-                    <textarea id="editor1" class="form-control"  name="description_ru">{{ about.description_ru }}</textarea>
-                  </div>
-
-                  <div class="col-md-12">
-                    <label for="validationCustomUsername" class="form-label">Описание UZ</label>
-                    <textarea id="editor" class="form-control"  name="description_uz">{{ about.description_uz }}</textarea>
-                  </div>
-
-
-                    
-                    </div>
-                 </div>
-                 <input type="submit" class="d-none" id="officeedit">
-                </form>
-              </div>
-             </div>
-            <!-- @@@@@@@@@@@ About End @@@@@@@@@@@@@@ -->
-
+    <!-- @@@@@@@@@ About Start @@@@@@@@@@@@@@ -->
+    <div class="col-12">
+      <div class="card radius-10 w-100 p-4">
+        {% if base.code == "edit" %}
+        <div class="alert alert-dismissible fade show py-2 bg-warning d-flex justify-content-between">
+          <div class="d-flex align-items-center">
+            <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
+            </div>
+            <div class="ms-3">
+              <div class="text-white">Информация о нас изменилась</div>
+            </div>
           </div>
+          <h3 class="alert_nums text-light align-self-center">7</h3>
+        </div>
+        {% endif %}
+        <form action="{% url 'control_aboutus_edit' %}" method="POST" class="needs-validation" novalidate="" enctype="multipart/form-data">
+        {% csrf_token %} 
+        <div class="card-body">
+          <div class="row g-3 mt-2 align-items-center d-flex">
+            <div class="col-md-12">
+              <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-between">
+                <div class="shadow text-center">
+                  {% if about.logo %}
+                      <a><label for="logofile"><img src="{{about.logo.url}}" alt="..." class="" height="300" width="300" style="cursor: pointer;"></label></a>
+                      <input type="file" name="file" class="form-control has-validation d-none" accept="image/png, image/jpeg" id="logofile">
+                    {% else %}
+                      <a><label for="logofile"><img src="{% static 'control/assets/images/anata.png' %}" alt="..." class="" height="300" width="300" style="cursor: pointer;"></label></a>
+                      <input type="file" name="file" class="form-control has-validation d-none" accept="image/png, image/jpeg" id="logofile">
+                  {% endif %}
+                </div>
+                </div>
+                <div class="input-group has-validation mb-3">
+                </div>
+            </div>
+            <div class="col-12">
+              <div class="mb-3">
+                <h5 class="mb-3">Название Компание</h5>
+                <input type="text" name="title_ru" value="{{ about.title_ru }}" class="form-control has-validation" required="">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mb-3">
+                <h5 class="mb-3">Ссылка на карту</h5>
+                <input type="text" name="map" value="{{ about.map }}" class="form-control has-validation">
+              </div>
+          </div>
+          
+          <div class="col-6">
+            <div class="mb-3">
+              <h5 class="mb-3">Валюта</h5>
+              <input type="text" name="currency" value="{{ about.currency }}" class="form-control has-validation">
+            </div>
+        </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Описание RU</label>
+            <textarea id="editor1" class="form-control"  name="description_ru">{{ about.description_ru }}</textarea>
+          </div>
+
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Описание UZ</label>
+            <textarea id="editor" class="form-control"  name="description_uz">{{ about.description_uz }}</textarea>
+          </div>
+
+
+            
+            </div>
+          </div>
+          <input type="submit" class="d-none" id="officeedit">
+        </form>
+      </div>
+      </div>
+    <!-- @@@@@@@@@@@ About End @@@@@@@@@@@@@@ -->
+
+  </div>
 
 {% endblock content %}
 

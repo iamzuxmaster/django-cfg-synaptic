@@ -44,8 +44,24 @@
           <h3 class="alert_nums text-light align-self-center">7</h3>
         </div>
         {% endif %}
-        <form class="row g-3 needs-validation" action="{% url 'control_category_edit' %}" method="POST" novalidate>
+        <form class="row g-3 needs-validation" action="{% url 'control_category_edit' %}" method="POST" novalidate enctype="multipart/form-data">
             {% csrf_token %}
+            {% if base.office.category_imgs %}
+            <div class="col-md-12">
+              <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-between">
+                <div class="shadow text-center">
+                    {% if category.img %}
+                      <a><label for="logofile"><img src="{{category.img.url}}" alt="..." class="" height="300" width="300"  style="cursor: pointer; object-fit:cover;"></label></a>  
+                    {% else %}
+                      <a><label for="logofile"><img src="{% static 'control/assets/images/anata.png' %}" alt="..." class="" height="300" width="300" style="cursor: pointer; object-fit:cover;"></label></a>
+                    {% endif %}
+                      <input type="file" name="file" class="form-control has-validation d-none" accept="image/png, image/jpeg" id="logofile">
+                </div>
+                </div>
+                <div class="input-group has-validation mb-3">
+                </div>
+            </div>
+            {% endif %}
             <input type="hidden" name="category_slug" value="{{ category.slug }}">
           <div class="col-md-12">
             <label for="validationCustom01" class="form-label">Название категория RU</label>

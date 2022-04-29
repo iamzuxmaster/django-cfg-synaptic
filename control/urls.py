@@ -6,8 +6,10 @@ urlpatterns = [
     path("", views.control_index, name="control_index"),
     path("api/", control_api.urls),
     path("logout/", views.log_out, name="control_logout"),
+    path("login/", views.log_in, name="control_login"),
+        path("signin/", views.sign_in, name="control_signin"),
 
-    # Categories
+    # Categories 
     path("categories/", views.control_categories_all, name="control_categories_all"),
     path("category/add/", views.control_categories_add, name="control_category_add"),
         path("category_add/", views.control_subcategories_category_add),
@@ -37,12 +39,14 @@ urlpatterns = [
     # Products 
     path("products/", views.control_products_all, name="control_products_all"),
     path("product/add/", views.control_product_add, name="control_products_add"),
+        path("product/image/add/", views.control_product_image_add, name="control_product_image_add"),
+        path("product/image/delete/", views.control_product_image_delete, name="control_product_image_delete"),
         path("product/create/", views.control_product_create, name="control_products_create"),
         path("product/edit/", views.control_product_edit, name="control_products_edit"),
         path("product/delete/", views.control_product_delete, name="control_products_delete"),
     path("product/<str:slug>/", views.control_product_detail, name="control_products_detail"),
 
-
+ 
     # Sliders
     path("sliders/", views.control_sliders_all, name="control_sliders_all"),
     path("slider/add/", views.control_sliders_add, name="control_sliders_add"),
@@ -73,5 +77,6 @@ urlpatterns = [
     path("account/<str:login>/", views.control_accounts_detail, name="control_accounts_detail"),
     path("aboutus/", views.control_aboutus, name="control_aboutus"),
         path("aboutus/edit/", views.control_aboutus_edit, name="control_aboutus_edit"),
+        path("aboutus/email/add/", views.control_aboutus_email_add, name="control_aboutus_email_add"),
     path("aboutus/address/add/", views.control_aboutus_address_add, name="control_aboutus_address_add")
  ]      

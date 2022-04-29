@@ -19,7 +19,7 @@
 </style>
 <div class="ms-auto d-block">
   <div class="btn-group">
-    <a href="add.html" class="btn btn-outline-primary d-block transition-fade" >Добавить</a>
+    <a href="{% url 'control_category_add' %}" class="btn btn-outline-primary d-block transition-fade" >Добавить</a>
   </div>
 </div>
 {% endblock add %}
@@ -28,7 +28,6 @@
 
 {% block content %}
 {% if base.code == "created" %}
-<div class="transition-fade" id="swup">
 <div class="alert alert-dismissible fade show py-2 bg-success d-flex justify-content-between">
   <div class="d-flex align-items-center">
     <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
@@ -90,7 +89,6 @@
               </div>
           </div>
       </div>
-</div>
 
       {% endblock content %}
 

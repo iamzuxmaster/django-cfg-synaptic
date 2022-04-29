@@ -1,20 +1,39 @@
+import email
 import json
+from math import prod
 from unicodedata import category
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth import authenticate, logout
-from .models import Account, Blog, Category, Discount, Office, OfficeAddress, Order, OrderTypes, Product, Slider, SubCategory, User
-from django.http import HttpRequest, JsonResponse
+from django.contrib.auth import authenticate, logout, login
+from .models import Account, Blog, Category, Discount, Office, OfficeAddress, OfficeEmail, Order, OrderTypes, Product, ProductImage, Slider, SubCategory, User
+from django.http import HttpRequest, HttpResponse, JsonResponse
 
 
 SECURE_PATH_ADMIN = '/control/'
 
-def test(request):
-    context ={}
-    return render(request, "control/test.html", context)
+def log_in(request:HttpRequest):
+    if request.user.is_authenticated: 
+        return redirect("control_index")
+    else:
+        context = {
+            "base": base_context(request)
+        }
+        return render(request, 'control/login.html', context)   
 
 def log_out(request):
     logout(request)
-    return redirect(SECURE_PATH_ADMIN)
+    return redirect(SECURE_PATH_ADMIN + "login/")
+
+
+def sign_in(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("control_index")
+        else:
+            return redirect(SECURE_PATH_ADMIN + "login/?user404")
 
 def base_context(request):
     try: 
@@ -68,10 +87,21 @@ def control_categories_create(request):
         title_ru = request.POST["title_ru"]
         title_uz = request.POST["title_uz"]
         priority = request.POST["priority"]
+        office, office_created = Office.objects.get_or_create(id=1)
+
+        if office.category_imgs:
+            try: 
+                category_img = request.FILES["file"]
+            except:
+                category_img = None
+        else: 
+            category_img = None
+
         if title_ru.lower().strip() in list(map(lambda category: category.title_ru.lower().strip(), Category.objects.all())):
             return redirect(SECURE_PATH_ADMIN+"category/add/?error")
         else:
             category = Category.objects.create(title_uz=title_uz, title_ru=title_ru, priority=priority)
+            category.img = category_img
             category.save()
             return redirect(SECURE_PATH_ADMIN+"categories/?created")
     else: 
@@ -443,6 +473,26 @@ def control_product_create(request):
         }
         return JsonResponse(answer, safe=False)
 
+def control_product_image_add(request: HttpRequest):
+    product = Product.objects.get(id=request.POST["product_id"])
+    product_img = ProductImage.objects.create(product=product, img_min=request.FILES["file"], img_full=request.FILES["file"])
+    answer = {
+        "code": 200,
+        "id": product_img.id,
+        "img": product_img.img_min.url
+    }
+    return JsonResponse(answer, safe=False)
+
+def control_product_image_delete(request: HttpRequest):
+    body = json.loads(request.body)
+    product_img = ProductImage.objects.get(id=body["product_image_id"])
+    product_img.delete()
+    answer = {
+        "code": 200
+    }
+    return JsonResponse(answer, safe=False)
+
+
 def control_product_detail(request, slug):
     categories = Category.objects.all()
     subcategories = SubCategory.objects.all()
@@ -468,6 +518,15 @@ def control_product_edit(request):
         product.description_uz = request.POST["description_uz"]
         product.priority = request.POST["priority"]
         product.price = request.POST["price"]
+        
+        try: 
+            if request.POST["available"]:
+                product.available = True
+            else:
+                product.available = False
+        except: 
+            product.available = False
+
         if request.POST["discount_id"] != '0':
             product.discount = get_object_or_404(Discount, id=request.POST["discount_id"])
         else:
@@ -906,6 +965,16 @@ def control_aboutus_edit(request: HttpRequest):
         return JsonResponse(answer, safe=False)
 
     return redirect(SECURE_PATH_ADMIN + 'aboutus/?edited')
+
+def control_aboutus_email_add(request: HttpRequest):
+    data = json.loads(request.body)
+    title = data["email"]
+    office_email = OfficeEmail.objects.create(email=title)
+    answer = {
+        "code": 200,
+        "email": {'id': office_email.id, 'email': office_email.email}
+    }
+    return JsonResponse(answer, safe=False)
 
 def control_aboutus_address_add(request: HttpRequest):
     if request.method == "POST":

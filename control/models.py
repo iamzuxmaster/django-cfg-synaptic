@@ -66,6 +66,7 @@ class Account(models.Model):
 
 
 class Category(models.Model): 
+    img = ResizedImageField(size=[600,600], quality=100, upload_to="control/categories/", null=True, blank=True)
     title_uz = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
     slug = models.CharField(max_length=250)
@@ -187,7 +188,7 @@ class ProductImage(models.Model):
 
 
     def __str__(self):
-        return f"Фото: {self.product.title}"
+        return f"Фото: {self.product.title_ru}"
 
 
     class Meta: 
@@ -319,6 +320,7 @@ class OrderItem(models.Model):
 
 class Office(models.Model):
     title_ru = models.CharField(max_length=255)
+    category_imgs = models.BooleanField(default=False)
     description_uz  = models.TextField(max_length=255)
     description_ru  = models.TextField(max_length=255)
     currency = models.CharField(max_length=255, null=True, blank=True, default="UZS")

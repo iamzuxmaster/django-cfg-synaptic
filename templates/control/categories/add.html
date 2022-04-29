@@ -13,7 +13,7 @@
 {% block page_title %}Добавить категория {% endblock page_title %}
 
 {% block content %}
-<div class="card transition-fade" id="swup">
+<div class="card">
     <div class="card-body">
       <div class="p-4 border rounded">
         {% if base.code == "error" %}
@@ -28,8 +28,25 @@
           <h3 class="alert_nums text-light align-self-center">7</h3>
         </div>
         {% endif %}
-        <form class="row g-3 needs-validation" action="{% url 'control_category_create' %}" method="POST" novalidate>
+        <form class="row g-3 needs-validation" action="{% url 'control_category_create' %}" method="POST" novalidate enctype="multipart/form-data">
             {% csrf_token %}
+            {% if base.office.category_imgs %}
+            <div class="col-md-12">
+              <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-between">
+                <div class="shadow text-center">
+                  {% if about.logo %}
+                      <a><label for="logofile"><img src="{{about.logo.url}}" alt="..." class="" height="300" width="300" style="cursor: pointer;"></label></a>
+                      <input type="file" name="file" class="form-control has-validation d-none" accept="image/png, image/jpeg" id="logofile">
+                    {% else %}
+                      <a><label for="logofile"><img src="{% static 'control/assets/images/anata.png' %}" alt="..." class="" height="300" width="300" style="cursor: pointer; object-fit:cover;"></label></a>
+                      <input type="file" name="file" class="form-control has-validation d-none" accept="image/png, image/jpeg" id="logofile">
+                  {% endif %}
+                </div>
+                </div>
+                <div class="input-group has-validation mb-3">
+                </div>
+            </div>
+            {% endif %}
           <div class="col-md-12">
             <label for="validationCustom01" class="form-label">Название категория RU</label>
             <input type="text" name="title_ru" class="form-control" id="validationCustom01" required>
@@ -53,7 +70,6 @@
         </form>
       </div>
     </div>
-  </div>
 {% endblock content %}
 
 {% block js_content %}

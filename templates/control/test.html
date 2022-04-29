@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    .zone{
+      width: 500px;
+      border: 3px #333 solid;
+      padding: 20px;
+    }
+    .item{
+      padding: 20px;
+      border: 4px solid #333;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="zone-1 zone">
+    <div class="item" draggable="true" id="q1">
+      item 1
+    </div>
+    <div class="item" draggable="true" id="q2">
+      item 2
+    </div>
+    <div class="item" draggable="true" id="q3">
+      item 3
+    </div>
+  </div>
+
+  <div class="zone-2 zone">
+    <div class="item" draggable="true" id="q4">
+      item 4
+    </div>
+    <div class="item" draggable="true" id="q5">
+      item 5
+    </div>
+    <div class="item" draggable="true" id="q6">
+      item 6
+    </div>
+  </div>
+
+<script>
+  let zone1 = document.querySelector(".zone-1");
+  let zone2 = document.querySelector(".zone-2");
+  let items = document.querySelectorAll(".item");
+
+  zone1.ondragover = allowDrop;
+  zone2.ondragover = allowDrop;
+
+  
+  items.forEach(item => {
+    item.ondragstart = drag;
+  })
+  
+  zone1.ondrop = drop;    
+  zone2.ondrop = drop;
+
+  function allowDrop(event) {
+    event.preventDefault();
+  }
+
+  function drag(event) {
+    event.dataTransfer.setData("id", event.target.id);
+  }
+
+  function drop(event) {
+    let itemId = event.dataTransfer.getData("id");
+    console.log(itemId);
+    try {event.target.append(document.getElementById(itemId))} catch{}
+  }
+
+</script>
+
+</body>
+</html>

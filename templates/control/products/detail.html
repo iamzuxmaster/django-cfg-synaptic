@@ -21,7 +21,7 @@
     <div class="card-body">
       <div class="p-4 border rounded">
         {% if base.code == "edited" %}
-        <div class="alert alert-dismissible fade show py-2 bg-warning d-flex justify-content-between">
+        <div class="alert alert-dismissible fade show py-2 bg-warning d-flex justify-content-between" id="alert">
           <div class="d-flex align-items-center">
             <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
             </div>
@@ -32,7 +32,7 @@
           <h3 class="alert_nums text-light align-self-center">7</h3>
         </div>
         {% elif base.code == "error" %}
-        <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
+        <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between" id="alert">
           <div class="d-flex align-items-center">
             <div class="fs-3 text-white"><ion-icon name="close-circle-sharp"></ion-icon>
             </div>
@@ -41,6 +41,17 @@
             </div>
           </div>
           <h3 class="alert_nums text-light align-self-center">7</h3>
+        </div>
+        {% endif %}
+        {% if product.available is not True %}
+        <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
+          <div class="d-flex align-items-center">
+            <div class="fs-3 text-white"><ion-icon name="close-circle-sharp"></ion-icon>
+            </div>
+            <div class="ms-3">
+              <div class="text-white">Наименование не видно.</div>
+            </div>
+          </div>
         </div>
         {% endif %}
 
@@ -136,6 +147,10 @@
             <div class="invalid-feedback">Пожалуйста, укажите приоритет.</div>
             </div>
           </div>
+          <div class="form-check-danger form-check form-switch">
+            <input class="form-check-input" name="available" type="checkbox" {% if product.available %} checked="" {% endif %}>
+            <label class="form-check-label" for="flexSwitchCheckCheckedDanger">Вид</label>
+          </div>
           <div class="col-md-12">
             <label for="validationCustomUsername" class="form-label">Описание RU</label>
               <textarea id="editor" class="form-control" name="description_ru">{{ product.description_ru }}</textarea>
@@ -151,7 +166,33 @@
       </div>
     </div>
   </div>
-
+  
+<div class="card">
+  <div class="card-body">
+    <div class="p-4 border rounded">
+      <div class="row image-zone">
+        <div class="col-md-4 col-xl-2 col-sm-6">
+          <label for="product_image" class="mr-5">
+          <div class="card p-5 d-flex justify-content-center align-items-center" style="background-color: #e5e5e5; cursor:pointer;">
+            <div class="card-body d-flex justify-content-center align-items-center">
+                  <ion-icon name="image-outline" style="font-size: 40px;"></ion-icon>
+              </div>
+            </div>
+            <input type="file" class="d-none" id="product_image" data-product_id="{{product.id}}">
+          </label>
+        </div>
+        {% for product_image in product.productimage_set.all %}
+        <div class="col-md-4 col-xl-2 col-sm-6 mb-3" style='position:relative !important;' style='position:relative;'>
+                  <img style='object-fit:cover;' width='170px' src="{{product_image.img_min.url}}" alt="">
+                  <button data-id="{{product_image.id}}" onclick="deletefunction(this)" class="btn btn-danger btn-sm delete_product_image" style="position: absolute; top:0; right: 0;">
+                    <ion-icon name="trash-sharp" role="img" class="md hydrated m-0" aria-label="trash sharp"></ion-icon>
+                  </button>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}
 
 {% block js_content %}
@@ -319,15 +360,54 @@
 <script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
 <script src="{% static 'control/assets/plugins/input-tags/js/tagsinput.js' %}"></script>
 <script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
-<script src="{% static 'control/assets/plugins/fancy-file-uploader/jquery.ui.widget.js' %}"></script>
-<script src="{% static 'control/assets/plugins/fancy-file-uploader/jquery.fileupload.js' %}"></script>
-<script src="{% static 'control/assets/plugins/fancy-file-uploader/jquery.iframe-transport.js' %}"></script>
-<script src="{% static 'control/assets/plugins/fancy-file-uploader/jquery.fancy-fileupload.js' %}"></script>
-<script src="{% static 'control/assets/plugins/Drag-And-Drop/dist/imageuploadify.min.js' %}"></script>
-<script src="{% static 'control/assets/js/form-file-upload.js' %}"></script>
 <script src="{% static 'control/assets/js/modal_add.js' %}"></script>
 
+<script>
+  let $product_image  = document.querySelector('#product_image');
+  
+  $product_image.addEventListener('change',function(){
+    let data = new FormData()
+    data.append('file', this.files[0])
+    console.log(this.files[0]);
+    data.append('product_id', this.dataset.product_id)
+    fetch('/control/product/image/add/', {
+      method: "POST",
+      headers: {
+          "X-CSRFToken": csrftoken
+      },
+      body: data
+      }).then(resp => resp.json()).then(data =>{
+          
+        let image_zone = $('.image-zone');
+        image_zone.append(`
+        <div class="col-md-4 col-xl-2 col-sm-6 mb-3" style='position:relative !important;' style='position:relative;'>
+                  <img  style='object-fit:cover;' width='170px' src="${data.img}" alt="">
+                  <button class="btn btn-danger btn-sm delete_product_image'" data-id=${data.id} onclick='deletefunction(this)' style="position: absolute; top:0; right: 0;">
+                    <ion-icon name="trash-sharp" role="img" class="md hydrated m-0" aria-label="trash sharp"></ion-icon>
+                  </button>
+        </div>`)
+        
+      },
+      this.value = null
+      )
+});
 
+function deletefunction(element){
+  data  = element.dataset.id
+  fetch('/control/product/image/delete/', {
+  method: "POST",
+  headers: {
+      "X-CSRFToken": csrftoken
+  },
+  body: JSON.stringify(
+    { product_image_id:data }
+  )
+  }).then(
+    element.parentElement.remove()
+  )
+}
+
+</script>
 
 <script>
   let check = document.querySelector('#checker1')
@@ -404,6 +484,6 @@
             element.innerHTML -= 1
         })
     }
-    setInterval(()=> $(".alert").alert('close'), 6000)
+    setInterval(()=> $("#alert").alert('close'), 6000)
   </script>
 {% endblock js_content %}
