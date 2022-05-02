@@ -7,6 +7,11 @@
 <li class="breadcrumb-item active" aria-current="page">Пользователи</li>
 {% endblock breadcrumb %}
 {% block add %}
+<div class="ms-auto d-block">
+  <div class="btn-group">
+    <a href="{% url 'control_admins_add' %}" class="btn btn-outline-primary d-block">Добавить</a>
+  </div>
+</div>
 {% endblock add %}
 
 {% block page_title %}Все Аккаунты{% endblock page_title %}
@@ -55,7 +60,7 @@
                               <th>ФИО</th>
                               <th>Email</th>
                               <th>Роль</th>
-                              <th>Контакты</th>
+                              <th>Логин</th>
                               <th>Детали</th>
                           </tr>
                       </thead>
@@ -65,8 +70,8 @@
                               <td>{{ account.user.first_name }}</td>
                               <td>{{ account.user.email  }}</td>
                               <td>{{ account.role }}</td>
-                              <td>{{ account.phone }} </td>
-                              <td><a href="{% url 'control_accounts_detail' account.user.username %}" class="btn btn-success btn-sm"> Изменить </a></td>
+                              <td>{{ account.user.username }} </td>
+                              <td><a href="{% url 'control_admins_detail' account.user.username %}" class="btn btn-success btn-sm"> Изменить </a></td>
                           </tr>
                           {% endfor %}
                       </tbody>

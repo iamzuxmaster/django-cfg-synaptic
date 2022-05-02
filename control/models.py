@@ -44,6 +44,7 @@ class Account(models.Model):
         ("moderator", "Moderator-Admin"),
         ("admin", "Controller"),
         ("superadmin", "SuperAdmin"),
+        ("dev", "Developer"),
     ]
     role = models.CharField(max_length=255, choices=roles)
     telegram_id = models.IntegerField(null=True, blank=True)
@@ -320,7 +321,6 @@ class OrderItem(models.Model):
 
 class Office(models.Model):
     title_ru = models.CharField(max_length=255)
-    category_imgs = models.BooleanField(default=False)
     description_uz  = models.TextField(max_length=255)
     description_ru  = models.TextField(max_length=255)
     currency = models.CharField(max_length=255, null=True, blank=True, default="UZS")
@@ -328,6 +328,10 @@ class Office(models.Model):
     logo = ResizedImageField(size=[600, 600], quality=100, upload_to=f"control/office/")
     phone = models.IntegerField(null=True, blank=True)
     email = models.CharField(max_length=255, blank=True, null=True)
+
+    # For Developers
+    category_imgs = models.BooleanField(default=False)
+    main_color = models.CharField(max_length=255, null=True, blank=True)
     
     def __str__(self) -> str:
         return f"{self.title_ru}"

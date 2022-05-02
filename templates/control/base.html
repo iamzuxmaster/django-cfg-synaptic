@@ -145,7 +145,7 @@
         <div class="sidebar-header">
           
           <div>
-            <h2 class="logo-text">{{ base.office.title_ru }}</h2>
+            <h2 class="logo-text">{{ base.office.title_ru }} {{request.user.account.role}}</h2>
           </div>
           <div class="toggle-icon ms-auto"><ion-icon name="menu-sharp"></ion-icon>
           </div>
@@ -215,8 +215,12 @@
               <div class="menu-title">Натройки</div>
             </a>
             <ul>
-              <li> <a href="{% url 'control_accounts' %}"><ion-icon name="person-circle-sharp"></ion-icon>Пользователи</a>
+              <li> <a href="{% url 'control_accounts' %}"><ion-icon name="person-sharp"></ion-icon>Пользователи</a>
               </li>
+              
+              <li> <a href="{% url 'control_admins' %}"><ion-icon name="person-circle-sharp"></ion-icon>Админстраторы</a>
+              </li>
+
               <li> <a href="{% url 'control_aboutus' %}"><ion-icon name="information-circle-sharp"></ion-icon>Информации</a>
               </li>
             </ul>

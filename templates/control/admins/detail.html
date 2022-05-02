@@ -1,0 +1,175 @@
+{% extends 'control/base.html' %}
+{% load static %}
+
+{% block title %} Изменить пользователи Yola{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'control_admins_all' %}">Пользователи</a></li>
+<li class="breadcrumb-item active" aria-current="page">Изменить</li>
+{% endblock breadcrumb %}
+{% block add %}
+<div class="ms-auto d-block">
+  <div class="btn-group">
+    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleDangerModal">Удалить</button>
+  </div>
+</div>
+{% endblock add %}
+
+{% block page_title %}Изменить Пользователь {% endblock page_title %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+      <div class="p-4 border rounded">
+        {% if base.code == "error" %}
+        <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
+          <div class="d-flex align-items-center">
+            <div class="fs-3 text-white"><ion-icon name="close-circle-sharp"></ion-icon>
+            </div>
+            <div class="ms-3">
+              <div class="text-white">Есть Пользователь с таким email</div>
+            </div>
+          </div>
+          <h3 class="alert_nums text-light align-self-center">7</h3>
+        </div>
+        {% elif base.code == "edited" %}
+        <div id="alert" class="alert alert-dismissible fade show py-2 bg-warning d-flex justify-content-between">
+          <div class="d-flex align-items-center">
+            <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
+            </div>
+            <div class="ms-3">
+              <div class="text-white">Данный изменено.</div>
+            </div>
+          </div>
+          <h3 class="alert_nums text-light align-self-center">7</h3>
+        </div>
+        {% endif %}
+        <form class="row g-3 needs-validation" action="{% url 'control_admins_edit' %}" method="POST" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="login" value="{{ account.user.username }}">
+            
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Логин <sup class="text-danger">*</sup></label>
+            <input type="text"  disabled class="form-control" value="{{account.user.username}}" required>
+            <div class="invalid-feedback">Пожалуйста, введите Логин для вход.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Роль</label>
+            <div class="input-group has-validation"> 
+            <select class="form-select" required name="role" id="validationCustom00">
+             
+              {% for role in roles %}
+                {% if account.role == role.role %}
+                  <option value="{{role.role}}" selected>{{ role.title }}</option>
+                {% else %}
+                  <option value="{{role.role}}">{{ role.title }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+            <div class="invalid-feedback">Пожалуйста, укажите роль.</div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">ФИО <sup class="text-danger">*</sup></label>
+            <input type="text" name="fio" value="{{ account.user.first_name }}" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите Фамилия Имя Отчество.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Email <sup class="text-danger">*</sup></label>
+            <input type="email" name="email" value="{{ account.user.email }}" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите адресы почту.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Контакты <sup class="text-danger">*</sup></label>
+            <div class="input-group has-validation"> <span class="input-group-text" id="inputGroupPrepend">+</span>
+              <input type="number" value="{{ account.phone }}" name="phone" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value.length > 16) {this.value = 0}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+              <div class="invalid-feedback">Пожалуйста, укажите номер телефона.</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary" type="submit">Изменить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block js_content %}
+<div class="col">
+  <!-- Modal -->
+  <div class="modal fade" id="exampleDangerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger"><b>Внимание!</b></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-danger">
+          <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+          <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+          <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+          <input type="checkbox" id="checker"> <label for="checker">OK</label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+          <form action="{% url 'control_admins_delete' %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="username" value="{{account.user.username}}">
+              <button type="submit" class="btn btn-outline-danger delete" disabled>Удалить</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
+<script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+      'use strict'
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.querySelectorAll('.needs-validation')
+
+      // Loop over them and prevent submission
+      Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+</script>
+
+<script>
+  let check = document.querySelector('#checker')
+  check.addEventListener('change' ,  ()=> {
+  let remove = document.querySelector('.modal-footer .delete')
+  
+  if (check.checked) {
+  remove.removeAttribute('disabled')
+  } else {
+  remove.setAttribute('disabled', 'true')
+  }
+  })
+</script>
+<script>
+    setInterval(myTimer, 1000);
+    function myTimer() {
+        const d = new Date();
+        let cc = document.querySelectorAll('.alert_nums');
+        cc.forEach(element => {
+            element.innerHTML -= 1
+        })
+    }
+    setInterval(()=> $(".alert").alert('close'), 6000)
+  </script>
+{% endblock js_content %}

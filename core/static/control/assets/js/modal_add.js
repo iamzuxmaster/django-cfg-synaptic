@@ -27,18 +27,8 @@
               category_title_uz.value = ''
               category_title_ru.value = ''
               category_priority.value = 1
-              let alert_box = document.querySelector('.alert_box')
-              alert_box.innerHTML = `
-              <div class="alert alert-dismissible fade show py-2 bg-success d-flex justify-content-between">
-                <div class="d-flex align-items-center">
-                  <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
-                  </div>
-                  <div class="ms-3">
-                    <div class="text-white">Категория добавлено</div>
-                  </div>
-                </div>
-              </div>
-              `
+              $('#category_add').modal('hide');
+          
             }
             else{
               let alert_box = document.querySelector('.alert_box')
@@ -55,6 +45,7 @@
               `
             }
           }
+          
         )
     } else {
       console.log("Error");
@@ -92,18 +83,9 @@
               subcategory_title_uz.value = ''
               subcategory_title_ru.value = ''
               subcategory_priority.value = 1
-              let alert_box = document.querySelector('.alert_box_subcategory')
-              alert_box.innerHTML = `
-              <div class="alert alert-dismissible fade show py-2 bg-success d-flex justify-content-between">
-                <div class="d-flex align-items-center">
-                  <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
-                  </div>
-                  <div class="ms-3">
-                    <div class="text-white">Подкатегория добавлено</div>
-                  </div>
-                </div>
-              </div>
-              `
+
+              $('#subcategory_add').modal('hide');
+          
             }
             else{
               let alert_box = document.querySelector('.alert_box_subcategory')
@@ -151,18 +133,8 @@
               select_option_subcategory.innerHTML += `<option value="${data.discount.id}">${data.discount.title}</option>`
               discount_title.value = ''
               discount_unit.value = ''
-              let alert_box = document.querySelector('.alert_box_discount')
-              alert_box.innerHTML = `
-              <div class="alert alert-dismissible fade show py-2 bg-success d-flex justify-content-between">
-                <div class="d-flex align-items-center">
-                  <div class="fs-3 text-white"><ion-icon name="checkmark-circle-sharp"></ion-icon>
-                  </div>
-                  <div class="ms-3">
-                    <div class="text-white">Скидка добавлено</div>
-                  </div>
-                </div>
-              </div>
-              `
+              $('#discount_add').modal('hide');
+          
             }
             else{
               let alert_box = document.querySelector('.alert_box_discount')

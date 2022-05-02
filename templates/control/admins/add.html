@@ -1,0 +1,118 @@
+{% extends 'control/base.html' %}
+{% load static %}
+
+{% block title %} Добавить новое пользователи Yola{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'control_admins_all' %}">Админстраторы</a></li>
+<li class="breadcrumb-item active" aria-current="page">Добавить</li>
+{% endblock breadcrumb %}
+{% block add %}
+{% endblock add %}
+
+{% block page_title %}Добавить Пользователь {% endblock page_title %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+      <div class="p-4 border rounded">
+        {% if base.code == "already" %}
+        <div class="alert alert-dismissible fade show py-2 bg-danger d-flex justify-content-between">
+          <div class="d-flex align-items-center">
+            <div class="fs-3 text-white"><ion-icon name="close-circle-sharp"></ion-icon>
+            </div>
+            <div class="ms-3">
+              <div class="text-white">Есть Пользователь с таким email или Логинам</div>
+            </div>
+          </div>
+          <h3 class="alert_nums text-light align-self-center">7</h3>
+        </div>
+        {% endif %}
+        <form class="row g-3 needs-validation" action="{% url 'control_admins_create' %}" method="POST" novalidate>
+            {% csrf_token %}
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Логин <sup class="text-danger">*</sup></label>
+            <input type="text" name="login" class="form-control" oninput="this.value =  this.value.toLowerCase();this.value = this.value.replace(/[^0-9a-zA-Z-_]+/g,'');" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите Логин для вход.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Роль</label>
+            <div class="input-group has-validation"> 
+            <select class="form-select" required name="role" id="validationCustom00">
+              <option value="moderator">Модератор</option>
+                <option value="admin">Админстратор</option>
+            </select>
+            <div class="invalid-feedback">Пожалуйста, укажите роль.</div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">ФИО <sup class="text-danger">*</sup></label>
+            <input type="text" name="fio" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите Фамилия Имя Отчество.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustom01" class="form-label">Email <sup class="text-danger">*</sup></label>
+            <input type="email" name="email" class="form-control" id="validationCustom01" required>
+            <div class="invalid-feedback">Пожалуйста, введите адресы почту.</div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Мобильный <sup class="text-danger">*</sup></label>
+            <div class="input-group has-validation"> <span class="input-group-text" id="inputGroupPrepend">+</span>
+              <input type="tel" name="phone" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value.length > 16) {this.value = 0}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+              <div class="invalid-feedback">Пожалуйста, укажите номер телефона.</div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustomUsername" class="form-label">Пароль <sup class="text-danger">*</sup></label>
+            <div class="input-group has-validation">
+              <input type="password" name="password" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); if (this.value.length > 16) {this.value = 0}" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+              <div class="invalid-feedback">Пожалуйста, укажите пароль не менее 6 цифров</div>
+            </div>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary" type="submit">Добавить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block js_content %}
+<script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
+<script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+      'use strict'
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.querySelectorAll('.needs-validation')
+
+      // Loop over them and prevent submission
+      Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+</script>
+
+<script>
+    setInterval(myTimer, 1000);
+    function myTimer() {
+        const d = new Date();
+        let cc = document.querySelectorAll('.alert_nums');
+        cc.forEach(element => {
+            element.innerHTML -= 1
+        })
+    }
+    setInterval(()=> $(".alert").alert('close'), 6000)
+  </script>
+{% endblock js_content %}

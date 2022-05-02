@@ -1,12 +1,9 @@
-import email
 import json
-from math import prod
-from unicodedata import category
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import authenticate, logout, login
-from .models import Account, Blog, Category, Discount, Office, OfficeAddress, OfficeEmail, Order, OrderTypes, Product, ProductImage, Slider, SubCategory, User
-from django.http import HttpRequest, HttpResponse, JsonResponse
-
+from .models import Account, Blog, Category, Discount, Office, OfficeAddress, OfficeEmail, OfficePhone, Order, OrderTypes, Product, ProductImage, Slider, SubCategory, User
+from django.http import HttpRequest, JsonResponse
+from core.settings import BASE_DIR
 
 SECURE_PATH_ADMIN = '/control/'
 
@@ -561,7 +558,8 @@ def control_product_edit(request):
 def control_product_delete(request):
     if request.method == "POST":
         product = get_object_or_404(Product, slug=request.POST["product_slug"])
-        product.delete()
+        product.drop = True
+        product.save()
         return redirect(SECURE_PATH_ADMIN + "products/?deleted")
 
 
@@ -842,22 +840,41 @@ def control_ordertype_delete(request):
     return JsonResponse(answer, safe=False)
 
 def control_accounts(request:HttpRequest):
-    accounts = Account.objects.all()
+    accounts_all = Account.objects.all()
+    accounts = []
+    for account in accounts_all:
+        if account.role == 'client':
+            accounts.append(account)
+
     context = {
         "base": base_context(request),
         "accounts": accounts
     }
     return render(request, "control/accounts/all.html", context)
 
-def control_accounts_add(request:HttpRequest):
+def control_admins(request:HttpRequest):
+    accounts_all = Account.objects.all()
+    accounts = []
+    for account in accounts_all:
+        if account.role == 'admin' or account.role == 'moderator' or account.role == 'superadmin':
+            accounts.append(account)
+
+    context = {
+        "base": base_context(request),
+        "accounts": accounts
+    }
+    return render(request, "control/admins/all.html", context)
+
+
+def control_admins_add(request:HttpRequest):
     context = {
         "base": base_context(request),
     }
-    return render(request, "control/accounts/add.html", context)
+    return render(request, "control/admins/add.html", context)
 
-def control_accounts_create(request:HttpRequest):
+def control_admins_create(request:HttpRequest):
     if request.method == 'POST': 
-        if request.POST["login"] not in list(map(lambda user: user.username, User.objects.all())):    
+        if request.POST["login"] not in list(map(lambda user: user.username, User.objects.all())) and request.POST["email"] not in list(map(lambda user: user.email, User.objects.all())):
             login = request.POST["login"]
             role = request.POST["role"]
             fio = request.POST["fio"]
@@ -872,7 +889,7 @@ def control_accounts_create(request:HttpRequest):
             user.account.save()
             user.save()
         else:
-            return redirect(SECURE_PATH_ADMIN + 'account/add/?already')
+            return redirect(SECURE_PATH_ADMIN + 'admin/add/?already')
     
     else: 
         answer = {
@@ -881,11 +898,11 @@ def control_accounts_create(request:HttpRequest):
         }
         return JsonResponse(answer, safe=False)
 
-    return redirect(SECURE_PATH_ADMIN + 'accounts/?added')
+    return redirect(SECURE_PATH_ADMIN + 'admins/?added')
 
 
 
-def control_accounts_detail(request: HttpRequest, login):
+def control_admins_detail(request: HttpRequest, login):
     account = Account.objects.get(user__username=login)
     roles = [
         {"title": 'Модератор', "role": 'moderator'},
@@ -896,11 +913,11 @@ def control_accounts_detail(request: HttpRequest, login):
         "account": account,
         "roles": roles
     }
-    return render(request, "control/accounts/detail.html", context)
+    return render(request, "control/admins/detail.html", context)
 
 
 
-def control_accounts_edit(request:HttpRequest):
+def control_admins_edit(request:HttpRequest):
     if request.method == 'POST': 
         login = request.POST["login"]
         role = request.POST["role"]
@@ -921,21 +938,31 @@ def control_accounts_edit(request:HttpRequest):
         }
         return JsonResponse(answer, safe=False)
 
-    return redirect(SECURE_PATH_ADMIN + f'account/{user.username}/?edited')
+    return redirect(SECURE_PATH_ADMIN + f'admin/{user.username}/?edited')
 
-def control_accounts_delete(request:HttpRequest):
+def control_admins_delete(request:HttpRequest):
     if request.method == "POST": 
         user = User.objects.get(username=request.POST["username"])
         user.delete()
-    return redirect(SECURE_PATH_ADMIN + 'accounts/?deleted')
+    return redirect(SECURE_PATH_ADMIN + 'admins/?deleted')
+
+
+
+
+
 
 def control_aboutus(request):
     office, office_created = Office.objects.get_or_create(id=1)
     aboutus_address = OfficeAddress.objects.all()
+    office_phones = OfficePhone.objects.all()
+
+    office_emails = OfficeEmail.objects.all()
     context = {
         "base": base_context(request=request),
         "about": office,
-        "aboutus_address": aboutus_address
+        "aboutus_address": aboutus_address,
+        "office_phones": office_phones,
+        "office_emails": office_emails
     }
     return render(request, "control/aboutus/about.html", context)
 
@@ -953,6 +980,25 @@ def control_aboutus_edit(request: HttpRequest):
         office.map = map
         office.currency = currency
         try: 
+            office.main_color  = request.POST["main_color"]
+        except:
+            pass
+
+
+        if request.POST["user_dev"] == 'True':
+            try: 
+                if request.POST["category_imgs"]: 
+                    office.category_imgs = True
+                else:
+                    office.categoy_imgs = False
+            except:
+                office.category_imgs = False
+            
+            office.main_color = request.POST["main_color"]
+
+
+
+        try: 
             office.logo = request.FILES["file"]
         except:
             pass
@@ -966,15 +1012,49 @@ def control_aboutus_edit(request: HttpRequest):
 
     return redirect(SECURE_PATH_ADMIN + 'aboutus/?edited')
 
+
+def control_aboutus_phone_add(request: HttpRequest):
+    data = json.loads(request.body)
+    phone = data["phone"]
+    office_phone = OfficePhone.objects.create(phone=phone)
+    answer = {
+        "code": 200,
+        "phone": {'id': office_phone.id, 'phone': office_phone.phone}
+    }
+    return JsonResponse(answer, safe=False)
+
+
 def control_aboutus_email_add(request: HttpRequest):
     data = json.loads(request.body)
-    title = data["email"]
-    office_email = OfficeEmail.objects.create(email=title)
+    email = data["email"]
+    office_email = OfficeEmail.objects.create(email=email)
     answer = {
         "code": 200,
         "email": {'id': office_email.id, 'email': office_email.email}
     }
     return JsonResponse(answer, safe=False)
+
+def control_aboutus_phone_delete(request: HttpRequest):
+    data = json.loads(request.body)
+    phone = data["phone_id"]
+    office_phone = OfficePhone.objects.get(id=phone)
+    office_phone.delete()
+    answer = {
+        "code": 200
+    }
+    return JsonResponse(answer, safe=False)
+
+
+def control_aboutus_email_delete(request: HttpRequest):
+    data = json.loads(request.body)
+    email = data["email_id"]
+    office_email = OfficeEmail.objects.get(id=email)
+    office_email.delete()
+    answer = {
+        "code": 200
+    }
+    return JsonResponse(answer, safe=False)
+
 
 def control_aboutus_address_add(request: HttpRequest):
     if request.method == "POST":

@@ -70,13 +70,19 @@ urlpatterns = [
     path("orders/ordertype/create/", views.control_ordertype_create, name="control_ordertype_create"),
     path("orders/ordertype/delete/", views.control_ordertype_delete, name="control_ordertype_delete"),
     path("accounts/", views.control_accounts, name="control_accounts"),
-    path("account/add/", views.control_accounts_add, name="control_accounts_add"),
-        path("account/create/", views.control_accounts_create, name="control_accounts_create"),
-        path("account/edit/", views.control_accounts_edit, name="control_accounts_edit"),
-        path("account/delete/", views.control_accounts_delete, name="control_accounts_delete"),
-    path("account/<str:login>/", views.control_accounts_detail, name="control_accounts_detail"),
+    path("admins/", views.control_admins, name="control_admins"),
+    path("admin/add/", views.control_admins_add, name="control_admins_add"),
+        path("admin/create/", views.control_admins_create, name="control_admins_create"),
+        path("admin/edit/", views.control_admins_edit, name="control_admins_edit"),
+        path("admin/delete/", views.control_admins_delete, name="control_admins_delete"),
+    path("admin/<str:login>/", views.control_admins_detail, name="control_admins_detail"),
+
+
     path("aboutus/", views.control_aboutus, name="control_aboutus"),
         path("aboutus/edit/", views.control_aboutus_edit, name="control_aboutus_edit"),
+        path("aboutus/phone/add/", views.control_aboutus_phone_add, name="control_aboutus_phone_add"),
         path("aboutus/email/add/", views.control_aboutus_email_add, name="control_aboutus_email_add"),
+        path("aboutus/phone/delete/", views.control_aboutus_phone_delete, name="control_aboutus_phone_delete"),
+        path("aboutus/email/delete/", views.control_aboutus_email_delete, name="control_aboutus_email_delete"),
     path("aboutus/address/add/", views.control_aboutus_address_add, name="control_aboutus_address_add")
  ]      
