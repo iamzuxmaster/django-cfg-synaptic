@@ -28,3 +28,10 @@
 - fixed logout,
 - added login
 - trash JS Files
+
+**1.0.32** [  _02.05.2022_ ]
+- Fixed Modal Hide
+- Added Account.Role  - Developer 
+- Fixed Product.drop
+- Added Admins
+- Added AboutUs.phone, AboutUs.email
