@@ -65,19 +65,17 @@
 	  <link href="{% static 'control/assets/css/pace.min.css' %}" rel="stylesheet" />
 	  <script src="{% static 'control/assets/js/pace.min.js' %}"></script>
 
-    <!--plugins-->
-    <link href="{% static 'control/assets/plugins/simplebar/css/simplebar.css' %}" rel="stylesheet" />
-    <link href="{% static 'control/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css' %}" rel="stylesheet" />
-    <link href="{% static 'control/assets/plugins/metismenu/css/metisMenu.min.css' %}" rel="stylesheet" />
-
     <!-- CSS Files -->
+    <link href="{% static 'control/assets/plugins/simplebar/css/simplebar.css' %}" rel="stylesheet" />
+    <link href="{% static 'control/assets/plugins/metismenu/css/metisMenu.min.css' %}" rel="stylesheet" />
     <link href="{% static 'control/assets/css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'control/assets/css/bootstrap-extended.css' %}" rel="stylesheet">
-    <link href="{% static 'control/assets/css/icons.css' %}" rel="stylesheet">
     <link href="{% static 'control/assets/css/style.css' %}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-
-
+    
+    <!-- JS Global Plugins -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <input type="hidden" name="req_id" value="{{request.user.account.id}}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor5/31.1.0/ckeditor.min.js" 
     integrity="sha512-A2+2JT5Hd8WgdCcY0kx5vxi+W6c+e3gv0M1rYpJ1uaYBofZ+izmDSEQLTRctRcRfxA+iGE+MhCjdFMFDYubFQw==" 
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -114,7 +112,7 @@
         return cookieValue;
       }
   
-      var csrftoken = getToken("csrftoken");
+      var csrfToken = getToken("csrftoken");
     </script>
 
     <title>{% block title %} {% endblock title %}</title>
@@ -206,7 +204,7 @@
             <a class="has-arrow" href="javascript:;">
               <div class="parent-icon"><ion-icon name="settings-sharp"></ion-icon>
               </div>
-              <div class="menu-title">Натройки</div>
+              <div class="menu-title">Настройки</div>
             </a>
             <ul>
               <li> <a href="{% url 'control_accounts' %}"><ion-icon name="person-sharp"></ion-icon>Пользователи</a>
@@ -214,9 +212,15 @@
               
               <li> <a href="{% url 'control_admins' %}"><ion-icon name="person-circle-sharp"></ion-icon>Админстраторы</a>
               </li>
-
+                                     
               <li> <a href="{% url 'control_aboutus' %}"><ion-icon name="information-circle-sharp"></ion-icon>Информации</a>
               </li>
+
+              {% if request.user.account.role == 'developer' %}
+                <li> <a href="{% url 'control_aboutus' %}"><ion-icon name="information-circle-sharp"></ion-icon>Конфигурации</a>
+                </li>
+              {% endif %}
+
             </ul>
           </li>
           <li>
@@ -242,6 +246,13 @@
 
               <ul class="navbar-nav align-items-center">
 
+                <li class="nav-item">
+                  <a class="dark-mode-icon">
+                    <div class="mode-icon">
+                      <h5 class="is_online">Hello World</h5>
+                    </div>
+                  </a>
+                </li>
                 <li class="nav-item dropdown dropdown-large dropdown-apps">
                   <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
                     <div class="">
@@ -250,6 +261,15 @@
                   </a>
                   <div class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
                     <div class="row row-cols-3 g-3 p-3">
+                      {% for user in base.users %}
+                      {% if user != request.user %}
+                      <div class="col text-center" data-include="{{user.account.id}}" onclick="openChatModal(this)">
+                        <div class="app-box mx-auto bg-gradient-info text-white"><ion-icon name="person-outline"></ion-icon>
+                        </div>
+                        <div class="app-title">{{user.username}}</div>
+                      </div>
+                      {%endif%}
+                      {% endfor %}
                     </div>
                   </div>
                 </li>
@@ -317,19 +337,153 @@
     </div>
   </div>
 </div>
+<div class="col">
+  <div class="modal fade" id="chatModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered" style="overflow-y: initial !important">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Чат с: <b class="ijKlmNo"></b></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="
+  height: 50vh;
+  overflow-y: auto;
+  overflow-x: hidden;">
+              <div id="chatmessages">
+                
+              </div>
+          </div>
+        <div class="modal-footer">
+            <input type="hidden" name="room_id">
+            <textarea oninput="auto_grow(this); onin(this);" class="form-control messageArea" rows="1"></textarea>
+            <button type="button" class="btn btn-success btn-block" disabled id="sendMessage">Отправить</button>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
 
 <!-- JS Files-->
     <script src="{% static 'control/assets/js/jquery.min.js' %}"></script>
+    <script>
+      function auto_grow(element) {
+        element.style.height = "5px";
+        element.style.height = (element.scrollHeight)+"px";
+    }
+    </script>
+    <script>
+      let inputMessage = $("textarea.messageArea")[0]
+      let sendMessage = $("button#sendMessage")[0]
+      function onin(element) {
+        if (inputMessage.value == ''){
+          sendMessage.setAttribute('disabled','true')
+        }
+        else {
+          sendMessage.removeAttribute('disabled')
+          inputMessage.classList.remove("border-danger")
+        }
+      }
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+      var socket = io.connect();
+      socket.on('connect', function() {
+          socket.emit('my_connect', {req_id: $('input[name="req_id"]').val()});
+      });
+      req_id = $('input[name="req_id"]').val()
+      function openChatModal(element){
+        $('#chatmessages').html("");
+        $("#chatModal").modal("toggle")
+        $("#chatModal").modal("show")
+        let json =  {
+          req_id: req_id,
+          acc_id: element.dataset.include
+        }
+        axios.post("/control/chat/all/messages/", json, {      
+          headers: {"X-CSRFToken": csrfToken, 'Content-Type': 'application/json'}
+        }).then(response => {
+          
+          $(".ijKlmNo").text(`${$(".col.text-center .app-title").text()}`)
+          $("input[name='room_id']").val(`${response.data.chat.id}`)
+          socket.emit("join_room", {room_id:$("input[name='room_id']").val()})
+          response.data.messages.forEach(message => {
+            let $messages = $('#chatmessages');
+            if (message.message.account.id == $('input[name="req_id"]').val()) {
+                $messages.append(`<div class='bg-success mb-3 p-2 rounded' style='width:80%;margin-left:auto; color:white;'>${message.message.message}</div>`)
+            } else {
+                $messages.append(`<div class='bg-success mb-3 p-2 rounded' style='width:80%;margin-right:auto; color:white;'>${message.message.message}</div>`)
+            }
+          })
+          
+        })
+      }
+      socket.on('joined_room', function(data) {
+      });
+
+      socket.on('disconnect', function() {
+        $('.is_online').text("Вы Офлайн");
+      });
+      socket.on('my_connect_response', function(msg) {
+          $('.is_online').text("Вы Онлайн");
+      });
+
+      $('button#sendMessage').click(function(event) {
+        let inputMessage = $("textarea.messageArea")
+        if (inputMessage.val() != '') {
+          socket.emit('sendmessage', {room_id: $('input[name="room_id"]').val(), message: $(".messageArea").val(), account_id:$('input[name="req_id"]').val() });
+        } 
+      });
+
+      socket.on("addmessage", (data)=>{
+      let $messages = $('#chatmessages');
+      let inputMessage = $("textarea.messageArea")
+      if (data.message.account.id == $('input[name="req_id"]').val()) {
+        $messages.append(`<div class='bg-success mb-3 p-2 rounded' style='width:80%;margin-left:auto; color:white;'>${data.message.message}</div>`)
+      } else {
+        $messages.append(`<div class='bg-success mb-3 p-2 rounded' style='width:80%;margin-right:auto; color:white;'>${data.message.message}</div>`)
+      }
+      inputMessage.val('')
+      })
+
+
+      $('form#emit').submit(function(event) {
+          socket.emit('my_event', {data: $('#emit_data').val()});
+          return false;
+      });
+      $('form#broadcast').submit(function(event) {
+          socket.emit('my_broadcast_event', {data: $('#broadcast_data').val()});
+          return false;
+      });
+      $('form#join').submit(function(event) {
+          socket.emit('join', {room: $('#join_room').val()});
+          return false;
+      });
+      $('form#leave').submit(function(event) {
+          socket.emit('leave', {room: $('#leave_room').val()});
+          return false;
+      });
+      $('form#send_room').submit(function(event) {
+          socket.emit('my_room_event', {room: $('#room_name').val(), data: $('#room_data').val()});
+          return false;
+      });
+      $('form#close').submit(function(event) {
+          socket.emit('close_room', {room: $('#close_room').val()});
+          return false;
+      });
+      $('form#disconnect').submit(function(event) {
+          socket.emit('disconnect_request');
+          return false;
+      });
+    </script>
+    <script>
+      
+    </script>
+    
     <script src="{% static 'control/assets/plugins/simplebar/js/simplebar.min.js' %}"></script>
     <script src="{% static 'control/assets/plugins/metismenu/js/metisMenu.min.js' %}"></script>
     <script src="{% static 'control/assets/js/bootstrap.bundle.min.js' %}"></script>
     <script type="module" src="https://unpkg.com/ionicons@6.0.0/dist/ionicons/ionicons.esm.js"></script>
-    <!--plugins-->
-    <script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
-    <!-- Main JS-->
-    <!-- <script src="{% static 'control/assets/js/index.js' %}"></script> -->
     <script src="{% static 'control/assets/js/main.js' %}"></script>
-
     <script src="{% static 'control/assets/js/orclock.js' %}"></script>
     
      {% block js_content %}

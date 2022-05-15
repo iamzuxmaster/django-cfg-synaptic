@@ -4,6 +4,7 @@ from .api import api as control_api
 
 urlpatterns = [
     path("", views.control_index, name="control_index"),
+    path("chat/", include("chat.urls")),
     path("api/", control_api.urls),
     path("logout/", views.log_out, name="control_logout"),
     path("login/", views.log_in, name="control_login"),
@@ -80,5 +81,6 @@ urlpatterns = [
         path("aboutus/email/add/", views.control_aboutus_email_add, name="control_aboutus_email_add"),
         path("aboutus/phone/delete/", views.control_aboutus_phone_delete, name="control_aboutus_phone_delete"),
         path("aboutus/email/delete/", views.control_aboutus_email_delete, name="control_aboutus_email_delete"),
-    path("aboutus/address/add/", views.control_aboutus_address_add, name="control_aboutus_address_add")
+    path("aboutus/address/add/", views.control_aboutus_address_add, name="control_aboutus_address_add"),
+
  ]      

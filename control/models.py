@@ -54,6 +54,7 @@ class Account(models.Model):
     ]
     telegram_lang = models.CharField(max_length=5, choices=telegram_langs, null=True, blank=True)
     verified = models.BooleanField(default=False)
+    online = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
 
 
@@ -278,3 +279,15 @@ class OfficeEmail(models.Model):
 class OfficeAddress(models.Model):
     title = models.CharField(max_length=255, null=True, blank=True)
     address = models.TextField()
+
+
+class Room(models.Model):
+    account_a = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="room_account_a")
+    account_b = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="room_account_b")
+    uuid = models.CharField(max_length=250, null=True, blank=True)
+
+class Message(models.Model): 
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True, blank=True)
+    sender = models.ForeignKey(Account, on_delete=models.CASCADE)
+    message = models.TextField()
+    date_created = models.DateTimeField(auto_now_add=True)
