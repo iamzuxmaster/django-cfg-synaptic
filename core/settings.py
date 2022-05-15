@@ -17,7 +17,8 @@ INSTALLED_APPS = [
     # 'django_hosts',
     'web.apps.WebConfig',
     'control.apps.ControlConfig',
-    'reset.apps.ResetConfig'
+    'reset.apps.ResetConfig',
+    'crab.apps.CrabConfig'
 ]
 
 MIDDLEWARE = [

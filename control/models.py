@@ -41,8 +41,8 @@ class Account(models.Model):
     phone = models.IntegerField(null=True, blank=True)
     roles = [
         ("client", "Client"),
-        ("moderator", "Moderator-Admin"),
-        ("admin", "Controller"),
+        ("moderator", "Moderator"),
+        ("admin", "Admin"),
         ("superadmin", "SuperAdmin"),
         ("dev", "Developer"),
     ]
@@ -241,83 +241,6 @@ class Blog(models.Model):
     class Meta:
         verbose_name = "Блог"
         verbose_name_plural = "Блог"
-
-class OrderTypes(models.Model):
-    title_ru = models.CharField(max_length=255)
-    priority = models.IntegerField(default=0)
-    color = models.CharField(max_length=255,null=True, blank=True)
-    edit = models.BooleanField(default=False)
-    
-    def __str__(self) -> str:
-        return f"{self.title_ru}"
-    
-    class Meta:
-        verbose_name = "Этап заказов"
-        verbose_name_plural = "Этап заказов"
-
-    @property
-    def type_orders(self):
-        return Order.objects.filter(ordertypes=self, checkout=True, complete=False)
-
-    @property
-    def type_orders_droped(self):
-        return Order.objects.filter(ordertypes=self,drop=True)
-
-    @property
-    def type_orders_completed(self):
-        return Order.objects.filter(ordertypes=self, drop=True, complete=True, checkout=True)
-
-
-class Order(models.Model): 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    ordertypes = models.ForeignKey(OrderTypes, on_delete=models.PROTECT, null=True, blank=True)
-    address = models.TextField(null=True, blank=True)
-    comment = models.TextField(null=True, blank=True)
-    ordertypes_comment = models.TextField(null=True, blank=True)
-    checkout = models.BooleanField(default=False)
-    complete = models.BooleanField(default=False)
-    drop = models.BooleanField(default=False)
-
-    
-    def __str__(self) -> str:
-        return f"{self.account}"
-    
-    class Meta:
-        verbose_name = "Заказ"
-        verbose_name_plural = "Заказы"
-
-    @property
-    def total_items(self):
-        quantities = 0
-        for orderitem in OrderItem.objects.filter(order=self):
-            quantities += orderitem.quantity
-        return quantities
-
-    @property
-    def total_price(self):
-        price = 0
-        for orderitem in OrderItem.objects.filter(order=self):
-            price += orderitem.total_price
-        return price
-
-
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
-
-    
-    def __str__(self) -> str:
-        return f"{self.order} {self.product.title_ru}"
-    
-    class Meta:
-        verbose_name = "Товар на Заказ"
-        verbose_name_plural = "Товары на Заказ"
-
-    @property
-    def total_price(self): 
-        return self.product.price * self.quantity
-
 
 class Office(models.Model):
     title_ru = models.CharField(max_length=255)

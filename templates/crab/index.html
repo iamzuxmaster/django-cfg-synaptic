@@ -1,0 +1,642 @@
+{% extends 'control/base.html' %}
+{% load static %}
+
+{% block title %} | Yola{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page">Пользователи</li>
+{% endblock breadcrumb %}
+
+{% block add %}
+{% if base.with_orderitem == False %}
+<div class="ms-auto d-block">
+  <div class="btn-group">
+    <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#add_modal" class="btn btn-outline-primary" >Создать заказ</a>
+  </div>
+</div>
+{% endif %}
+{% endblock add %}
+
+{% block page_title %}Все Заказы{% endblock page_title %}
+
+{% block crubhi %}
+<img src="{% static 'control/assets/images/emoji.svg' %}" height="20px" alt="hello">
+<h5 class="mb-0">Привет {{request.user.username}}. Желаем удачи</h5>
+{% endblock crubhi %}
+{% block content %}
+
+
+<div class="card">
+  <div class="card-body">
+    <ul class="nav nav-pills mb-3" role="tablist">
+      {% if request.user.account.role == 'moderator' %}
+      <li class="nav-item" role="presentation">
+        <a class="nav-link active" data-bs-toggle="pill" href="#pills-home" role="tab" aria-selected="true">
+          <div class="d-flex align-items-center">
+            <div class="tab-icon"><ion-icon name="home-sharp" class="me-1"></ion-icon>
+            </div>
+            <div class="tab-title">Главная</div>
+          </div>
+        </a>
+      </li>
+      {% endif %}
+      <li class="nav-item" role="presentation">
+        <a class="nav-link {% if request.user.account.role != 'moderator' %} active {% endif %}" data-bs-toggle="pill" href="#primary-pills-profile" role="tab" aria-selected="false">
+          <div class="d-flex align-items-center">
+            <div class="tab-icon"><ion-icon name="notifications-circle-sharp" class="me-1"></ion-icon>
+            </div>
+            <div class="tab-title">Заказы</div>
+          </div>
+        </a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="pill" href="#primary-pills-contact" role="tab" aria-selected="false">
+          <div class="d-flex align-items-center">
+            <div class="tab-icon"><ion-icon name="bookmark-outline" class="me-1"></ion-icon>
+            </div>
+            <div class="tab-title">Заметки</div>
+          </div>
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+      {% if request.user.account.role == 'moderator' %}
+      <div class="tab-pane fade show active" id="pills-home" role="tabpanel">     
+        <div class="row">   
+          <div class="col-12 col-lg-6 col-xl-4">
+            <div class="card radius-10 w-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <h6 class="mb-0">Ваш заказы</h6>
+                </div> 
+                <div class="chart-container3">
+                  <div class="piechart-legend">
+                    <h2 class="mb-1">{{ request.user.account.order_set.all.count }}</h2>
+                    <h6 class="mb-0">Общие Заказы</h6>
+                  </div>
+                  <canvas id="total_orders"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-6 col-xl-8">
+            <div class="card radius-10 w-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <h6 class="mb-0">Пока пет новое уведомление.</h6>
+                </div> 
+                <div class="moderator-notifactions">
+                  <div class="alert alert-dismissible fade show py-2 bg-primary d-flex justify-content-between">
+                    <div class="d-flex align-items-center">
+                      <div class="fs-3 text-white">
+                        <img src="{% static 'control/assets/images/party.svg' %}" height="23px" alt="">
+                      </div>
+                      <div class="ms-3">
+                        <div class="text-white font-weight-bold"> С днем рождением Анвар!  </div>
+                      </div>
+                    </div>
+                              
+                    <a href="javascript:;" class="text-info align-self-center">Посмотреть</a>
+                  </div>
+                  <div class="alert alert-dismissible fade show py-2 bg-warning d-flex justify-content-between">
+                    <div class="d-flex align-items-center">
+                      <div class="fs-3 text-white">
+                        <ion-icon name="notifications-outline"></ion-icon>
+                      </div>
+                      <div class="ms-3">
+                        <div class="text-white font-weight-bold">Новое заказы #18bb6b</div>
+                      </div>
+                    </div>
+                              
+                    <a href="javascript:;" class="text-info align-self-center">Взять</a>
+                  </div>
+                  <div class="alert alert-dismissible fade show py-2 bg-warning d-flex justify-content-between">
+                    <div class="d-flex align-items-center">
+                      <div class="fs-3 text-white">
+                        <ion-icon name="clipboard-outline"></ion-icon>
+                      </div>
+                      <div class="ms-3">
+                        <div class="text-white font-weight-bold">У тебя новое задачи от Админстраторы</div>
+                      </div>
+                    </div>
+                              
+                    <a href="javascript:;" class="text-info align-self-center">Посмотреть</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      <div class="tab-pane fade {% if request.user.account.role != 'moderator' %} show active {% endif %}" id="primary-pills-profile" role="tabpanel">
+      
+        <div class="card radius-10 w-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="fs-5 ms-auto dropdown">
+                 <div class="dropdown-toggle dropdown-toggle-nocaret cursor-pointer" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></div>
+                   <ul class="dropdown-menu">
+                     <li><a class="dropdown-item" href="#">Action</a></li>
+                     <li><a class="dropdown-item" href="#">Another action</a></li>
+                     <li><hr class="dropdown-divider"></li>
+                     <li><a class="dropdown-item" href="#">Something else here</a></li>
+                   </ul>
+               </div>
+             </div>
+             <div class="table-responsive" data-id="custom-filter">
+               <table border="0" class="mb-3" cellspacing="5" cellpadding="5">
+                  <div class="row d-flex justify-content-between">
+                    <div class="col-4">
+                      <label>Страна: </label>
+                      <div>
+                        <select name="" class="status-dropdown mb-0 form-control" id="">
+                          <option value="">All</option>
+                          <option value="London">London</option>
+                          <option value="Tokyo">Tokyo</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <label>Дата от:</label>
+                      <div>
+                        <div class='col-xs-4 input-group date'  id="">
+                          <input type="date" id="min-date" class="form-control min_D">
+                    
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        </div>
+
+                    </div>
+                    </div>
+                    <div class="col-4">
+                      <label>Дата до:</label>
+                      <div>
+                        <div class='col-xs-4 input-group'>
+                        <input type="date" class="form-control  max_D">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="col-4">
+                      <label>Категория: </label>
+                      <div>
+                        <select name="" class="category-dropdown mb-0 form-control" id="">
+                          <option value="">All</option>
+                          <option value="Accountant">Accountant</option>
+                          <option value="Support Engineer">Support Engineer</option>
+                        </select>
+                      </div>
+                      </div>
+                    
+                    <div class="col-4">
+                      <label>Сумм от:</label>
+                      <div><input type="text" id="min" name="min" class="form-control"></div>
+                    </div>
+                    <div class="col-4">
+                      <label>Сумм до :</label>
+                      <div><input type="text" id="max" name="max" class="form-control"></div>
+                    </div>
+                  </div>
+              </table>
+                 <table id="example" class="table table-striped table-bordered" style="margin: top 10px; width:100%">
+                     <thead>
+                         <tr>
+                             <th>ID</th>
+                             <th>Имя Пользователи</th>
+                             <th>Контакт</th>
+                             {% if base.with_orderitem %}
+                             <th> Приоритет </th>
+                             {% else %}
+                             <th>Продукт</th>
+                             {% endif %}
+                             <th>Статус</th>
+                             <th>Детали</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                      <tr>
+                          <td>$12345</td>
+                          <td>System Architect</td>
+                          <td>Edinburgh</td>
+                          <td>61</td>
+                          <td>2011/04/25</td>
+                          <td>320800 <span>{{base.office.currency}}</span> </td>
+                      </tr>
+                     </tbody>
+                 </table>
+             </div>
+          </div>
+        </div>  
+      </div>
+      <div class="tab-pane fade" id="primary-pills-contact" role="tabpanel">
+        <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 
+<script>
+  let add_ordertype = document.querySelector('.btn-ordertype-add')
+  add_ordertype.addEventListener('click', ()=>{
+    let modal_input_title = document.querySelector("#add_modal input[name='title_ru']");
+    if (modal_input_title.value != ''){
+      let url_f = 'ordertype/create/'
+      fetch(url_f, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+            title_ru: modal_input_title.value
+        })
+        }).then(resp => resp.json()).then(
+          data => {
+            if (data.code == 200) {
+              let card_headers = document.querySelector('.row.row-cols-1.row-cols-lg-3.add')
+              card_headers.innerHTML += `
+              <div class="col">
+               <div class="card">
+                 <div class="card-body">
+                   <div class="card-header d-flex justify-content-between"><h5>${data.ordertype.title_ru }</h5><a href="javascript:;" class="edit_ordertype" data-id="${data.ordertype.id}"><ion-icon name="create-outline" class="m-0" style="font-size: 20px;"></ion-icon></a></div>
+                   <div class="card-item mt-2 cards-zone" style="padding: 20px;" id="c_ordertype_${data.ordertype.id}">
+                   </div>
+                 </div>
+               </div>
+               </div>`
+              $('#add_modal').modal('hide');
+              let btns = document.querySelectorAll('.edit_ordertype');
+              btns.forEach(btn =>{
+                btn.addEventListener('click', ()=>{
+                  let modal_input_id = document.querySelector("#edit_modal input[type='hidden']");
+                  let modal_input_title = document.querySelector("#edit_modal input[name='title_ru']");
+                  let modal_btn_delete = document.querySelector("#edit_modal button[aria-label='Close']")
+
+                  modal_input_id.value = btn.dataset.id
+                  modal_input_title.value = btn.previousElementSibling.innerText
+                  console.log(btn.parentElement.nextElementSibling);
+                  if (btn.parentElement.nextElementSibling.children.length > 0){
+                    modal_btn_delete.setAttribute('disabled', 'true')
+                    modal_btn_delete.removeAttribute('data-modal_id')
+                    
+                  } else {
+                    modal_btn_delete.removeAttribute('disabled')
+                    modal_btn_delete.setAttribute('data-modal_id', `${btn.dataset.id}`)
+                  }
+
+                  $('#edit_modal').modal('toggle');
+                  $('#edit_modal').modal('show');
+                })
+              })
+              
+
+              const zones = document.querySelectorAll('.cards-zone');
+              const orders = document.querySelectorAll('.card-orders')
+
+              zones.forEach(zone => {
+              zone.ondragover = allowDrop;
+              })
+
+              function allowDrop(event){
+                  event.preventDefault();
+              }
+              orders.forEach(order => {
+                  order.ondragstart = drag;
+              })
+
+              function drag(event){
+                  event.dataTransfer.setData('order_id', event.target.id)
+              }
+
+
+              zones.forEach(zone => {
+                  zone.ondrop = drop;
+              })
+              function drop(event){
+                  let itemId = event.dataTransfer.getData('order_id');
+                  let itemTypeId = event.target.id.replace('c_ordertype_', '');
+              try {
+                  if (itemId.includes('c_order_')){
+                      let url_f = 'order/edit/'
+                      fetch(url_f, {
+                          method: "POST",
+                          headers: {
+                              "Content-Type": "application/json",
+                              "X-CSRFToken": csrftoken
+                          },
+                          body: JSON.stringify({
+                              order_id: itemId.replace('c_order_', ''),
+                              ordertype_id: itemTypeId
+                          })
+                        }).then(resp => resp.json()).then(
+                                data => {
+                                    if (data.code == 200) {
+                                          event.target.append(document.getElementById(itemId))
+                                    }
+                                    else{}
+                                }
+                                                          )
+                    }
+                } catch { }
+              }   
+              }
+              else{}
+            }
+            )
+      } else {console.log("Error");}
+
+  })
+
+
+</script> -->
+
+<!-- <script>
+  let btns = document.querySelectorAll('.edit_ordertype');
+  btns.forEach(btn =>{
+    btn.addEventListener('click', ()=>{
+      let modal_input_id = document.querySelector("#edit_modal input[type='hidden']");
+      let modal_input_title = document.querySelector("#edit_modal input[name='title_ru']");
+      let modal_btn_delete = document.querySelector("#edit_modal button[aria-label='Close']")
+
+      modal_input_id.value = btn.dataset.id
+      modal_input_title.value = btn.previousElementSibling.innerText
+      if (btn.parentElement.nextElementSibling.children.length > 0){
+        modal_btn_delete.setAttribute('disabled', 'true')
+        modal_btn_delete.removeAttribute('data-modal_id')
+        
+      } else {
+        modal_btn_delete.removeAttribute('disabled')
+        modal_btn_delete.setAttribute('data-modal_id', `${btn.dataset.id}`)
+      }
+
+      $('#edit_modal').modal('toggle');
+      $('#edit_modal').modal('show');
+    })
+  })
+  
+</script>  
+ -->
+<!-- 
+<script>
+  let edit_ordertype = document.querySelector('.btn-ordertype-edit')
+  edit_ordertype.addEventListener('click', ()=>{
+    let modal_input_id = document.querySelector("#edit_modal input[type='hidden']");
+    let modal_input_title = document.querySelector("#edit_modal input[name='title_ru']");
+    if (modal_input_title.value != ''){
+      let url_c = 'ordertype/edit/'
+      fetch(url_c, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+            ordertype_id: modal_input_id.value,
+            title_ru: modal_input_title.value
+        })
+        }).then(resp => resp.json()).then(
+          data => {
+            if (data.code == 200) {
+              let title = document.querySelector(`.card-body a[data-id='${data.ordertype.id}']`)
+              title.previousElementSibling.innerText = `${data.ordertype.title_ru}`
+
+              $('#edit_modal').modal('hide');
+            }
+            else{
+            }
+          }
+        )
+    } else {
+      console.log("Error");
+    }
+
+  })
+</script> -->
+
+<!-- <script>
+  let delete_ordertype = document.querySelector('.btn-ordertype-delete')
+  delete_ordertype.addEventListener('click', ()=>{
+      let url_d = 'ordertype/delete/'
+      fetch(url_d, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+            ordertype_id: delete_ordertype.dataset.modal_id
+        })
+        }).then(resp => resp.json()).then(
+          data => {
+            if (data.code == 200) {
+              let delete_p = document.querySelector(`.card-body a[data-id='${delete_ordertype.dataset.modal_id}']`)
+              delete_p.parentElement.parentElement.parentElement.parentElement.remove()
+              
+              $('#edit_modal').modal('hide');
+              let btns = document.querySelectorAll('.edit_ordertype');
+              btns.forEach(btn =>{
+                btn.addEventListener('click', ()=>{
+                  let modal_input_id = document.querySelector("#edit_modal input[type='hidden']");
+                  let modal_input_title = document.querySelector("#edit_modal input[name='title_ru']");
+                  modal_input_id.value = btn.dataset.id
+                  modal_input_title.value = btn.previousElementSibling.innerText
+                  $('#edit_modal').modal('toggle');
+                  $('#edit_modal').modal('show');
+                })
+              })
+            }
+            else{
+            }
+          }
+        )
+
+  })
+</script> -->
+
+<script>
+const zones = document.querySelectorAll('.cards-zone');
+const orders = document.querySelectorAll('.card-orders')
+
+zones.forEach(zone => {
+  zone.ondragover = allowDrop;
+})
+
+function allowDrop(event){
+    event.preventDefault();
+}
+orders.forEach(order => {
+  order.ondragstart = drag;
+})
+
+function drag(event){
+    event.dataTransfer.setData('order_id', event.target.id)
+}
+
+
+zones.forEach(zone => {
+  zone.ondrop = drop;
+})
+function drop(event){
+    let itemId = event.dataTransfer.getData('order_id');
+    let itemTypeId = event.target.id.replace('c_ordertype_', '');
+    try {
+      if (itemId.includes('c_order_')){
+        let url_f = 'order/edit/'
+        fetch(url_f, {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrftoken
+          },
+          body: JSON.stringify({
+              order_id: itemId.replace('c_order_', ''),
+              ordertype_id: itemTypeId
+          })
+          }).then(resp => resp.json()).then(
+            data => {
+              if (data.code == 200) {
+                event.target.append(document.getElementById(itemId))
+              }
+              else{
+              }
+            }
+          )
+      }
+    } catch { }
+}   
+</script>
+{% endblock content %}
+
+{% block js_content %}
+
+
+<script type="text/javascript">
+  $(document).ready(function () {
+      $('.datepicker').datepicker({
+        format: 'yyyy/mm/dd'
+      });
+      
+      
+  });
+</script>
+
+{% if request.user.account.role == 'moderator' %}
+<script>
+  
+  var ctx = document.getElementById('total_orders').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+          labels: ['Принятый', 'Отменен', 'Успешно'],
+          datasets: [{
+              data: [Number('{{request.user.account.moderator.total_orders}}'), Number('{{request.user.account.moderator.total_canceled_orders}}'), Number('{{ request.user.account.moderator.total_complete_orders }}')],
+              backgroundColor: [
+                  '#923eb9',
+                  '#f73757',
+                  '#18bb6b',
+              ],
+              borderWidth: 1
+          }]
+      },
+      options: {
+         maintainAspectRatio: false,
+         cutout: 125,
+         plugins: {
+            legend: {
+                display: false,
+            }
+        }
+         
+      }
+  });
+</script>
+{% endif %}
+
+
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="{% static 'control/assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'control/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
+<script src="{% static 'control/assets/js/table-datatable.js' %}"></script>
+<script src="{% static 'control/assets/js/main.js' %}"></script>
+    <script src="{% static 'control/assets/plugins/chartjs/chart.min.js' %}"></script>
+
+    
+<script>
+
+  var minDate, maxDate;
+  function toTimestamp(inputDateTime) {
+    if( inputDateTime == null || typeof inputDateTime == 'undefined' ) {
+        inputDateTime = new Date();
+    }
+    return Math.round(new Date(inputDateTime).getTime()/1000);
+}
+
+  $.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+        var min = parseInt( $('#min').val(), 10 );
+        var max = parseInt( $('#max').val(), 10 );
+        var age = parseFloat( data[5] ); 
+        var from_date = toTimestamp($('.min_D').val());
+        var to_date = toTimestamp($('.max_D').val());
+        var start_date = toTimestamp(data[4]);
+        var record_found = false;
+
+
+        if ( ( isNaN( min ) && isNaN( max ) ) ||
+             ( isNaN( min ) && age <= max ) ||
+             ( min <= age   && isNaN( max ) ) ||
+             ( min <= age   && age <= max ) )
+        {
+          record_found = true;
+        }
+
+        if( record_found && 
+            ( ( isNaN( from_date ) && isNaN( to_date ) ) || 
+              ( isNaN( from_date ) && from_date <= to_date ) || 
+              ( from_date <= start_date && isNaN( to_date ) ) || 
+              ( from_date <= start_date && start_date <= to_date ) ) )
+        {
+            record_found = true;
+        }
+        else
+        {
+            record_found = false;
+        }
+        return record_found;
+    }
+);
+
+
+$(document).ready(function() {
+    var table = $('#example').DataTable(
+    );
+     
+    // Event listener to the two range filtering inputs to redraw on input
+    $('#min, #max').keyup( function() {
+        table.draw();
+    } );
+
+    $('.min_D, .max_D').on('change', function() {
+      table.draw();
+  } );
+
+    $('.status-dropdown').on('change', function(e){
+      var status = $(this).val();
+      $('.status-dropdown').val(status)
+      //dataTable.column(6).search('\\s' + status + '\\s', true, false, true).draw();
+      table.column(2).search(status).draw();
+    })
+
+    $('.category-dropdown').on('change', function(e){
+      var status = $(this).val();
+      $('.category-dropdown').val(status)
+      //dataTable.column(6).search('\\s' + status + '\\s', true, false, true).draw();
+      table.column(1).search(status).draw();
+    })
+
+})
+</script>
+{% endblock js_content %}

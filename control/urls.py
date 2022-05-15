@@ -1,4 +1,4 @@
-from django.urls import path 
+from django.urls import path, include
 from . import views
 from .api import api as control_api
 
@@ -64,11 +64,7 @@ urlpatterns = [
     path("blog/<int:id>/", views.control_blog_detail, name="control_blog_detail"),
 
     # Orders
-    path("orders/", views.control_orders_all, name="control_orders_all"),
-    path("orders/order/edit/", views.control_order_edit, name="control_order_edit"),
-    path("orders/ordertype/edit/", views.control_ordertype_edit, name="control_ordertype_edit"),
-    path("orders/ordertype/create/", views.control_ordertype_create, name="control_ordertype_create"),
-    path("orders/ordertype/delete/", views.control_ordertype_delete, name="control_ordertype_delete"),
+    path("orders/", include("crab.urls")),
     path("accounts/", views.control_accounts, name="control_accounts"),
     path("admins/", views.control_admins, name="control_admins"),
     path("admin/add/", views.control_admins_add, name="control_admins_add"),

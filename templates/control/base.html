@@ -77,17 +77,15 @@
     <!-- CSS Files -->
     <link href="{% static 'control/assets/css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'control/assets/css/bootstrap-extended.css' %}" rel="stylesheet">
-    <link href="{% static 'control/assets/css/style.css' %}" rel="stylesheet">
     <link href="{% static 'control/assets/css/icons.css' %}" rel="stylesheet">
+    <link href="{% static 'control/assets/css/style.css' %}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 
-    <!--Theme Styles-->
-    <link href="{% static 'control/assets/css/dark-theme.css' %}" rel="stylesheet" />
-    <link href="{% static 'control/assets/css/semi-dark.css' %}" rel="stylesheet" />
-    <link href="{% static 'control/assets/css/header-colors.css' %}" rel="stylesheet" />
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor5/31.1.0/ckeditor.min.js" 
     integrity="sha512-A2+2JT5Hd8WgdCcY0kx5vxi+W6c+e3gv0M1rYpJ1uaYBofZ+izmDSEQLTRctRcRfxA+iGE+MhCjdFMFDYubFQw==" 
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <style>
       div.col-sm-12.col-md-6 {
         margin-bottom: 10px;
@@ -145,7 +143,7 @@
         <div class="sidebar-header">
           
           <div>
-            <h2 class="logo-text">{{ base.office.title_ru }} {{request.user.account.role}}</h2>
+            <h2 class="logo-text">{{ base.office.title_ru }}</h2>
           </div>
           <div class="toggle-icon ms-auto"><ion-icon name="menu-sharp"></ion-icon>
           </div>
@@ -160,14 +158,14 @@
             </a>
           </li>
           <li>
-            <a href="{% url 'control_orders_all' %}">
+            <a href="{% url 'crab_index' %}">
               <div class="parent-icon"><ion-icon name="notifications-outline"></ion-icon>
               </div>
               <div class="menu-title">Заказы</div>
             </a>
           </li>
           <li>
-            <a href="{% url 'control_categories_all' %}">
+            <a href="{% url 'control_categories_all' %}">`
               <div class="parent-icon"><ion-icon name="grid-sharp"></ion-icon>
               </div>
               <div class="menu-title">Категории</div>
@@ -241,24 +239,13 @@
           <header class="top-header">
             <nav class="navbar navbar-expand gap-3">
               <div class="mobile-menu-button"><ion-icon name="menu-sharp"></ion-icon></div>
-
-                  <h3 class="mt-2 admin-clock">---</h3>
-
-             
+              <h3 class="mt-2 admin-clock">--:--:--</h3>
+              {% block crubhi %}
+             {% endblock crubhi %}
              <div class="top-navbar-right ms-auto">
 
               <ul class="navbar-nav align-items-center">
-                <li class="nav-item mobile-search-button">
-                  <a class="nav-link" href="javascript:;">
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link dark-mode-icon" href="javascript:;">
-                    <div class="mode-icon">
-                      <ion-icon name="moon-sharp"></ion-icon> 
-                    </div>
-                  </a>
-                </li>
+
                 <li class="nav-item dropdown dropdown-large dropdown-apps">
                   <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown">
                     <div class="">
@@ -312,12 +299,6 @@
      </div>
   <!--end wrapper-->
      
-  <script>
-    let theme = document.querySelector(".edit-theme")
-    theme.addEventListener("click", ()=>{
-      localStorage.setItem("theme",theme.classList.value);
-    })
-  </script>
 
 
 <div class="col">
@@ -341,17 +322,19 @@
   </div>
 </div>
 
-    <!-- JS Files-->
+<!-- JS Files-->
     <script src="{% static 'control/assets/js/jquery.min.js' %}"></script>
     <script src="{% static 'control/assets/plugins/simplebar/js/simplebar.min.js' %}"></script>
     <script src="{% static 'control/assets/plugins/metismenu/js/metisMenu.min.js' %}"></script>
     <script src="{% static 'control/assets/js/bootstrap.bundle.min.js' %}"></script>
     <script type="module" src="https://unpkg.com/ionicons@6.0.0/dist/ionicons/ionicons.esm.js"></script>
     <!--plugins-->
+    <script src="{% static 'control/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
     <!-- Main JS-->
+    <!-- <script src="{% static 'control/assets/js/index.js' %}"></script> -->
     <script src="{% static 'control/assets/js/main.js' %}"></script>
-    <script src="{% static 'control/assets/js/orclock.js' %}"></script>
 
+    <script src="{% static 'control/assets/js/orclock.js' %}"></script>
     
      {% block js_content %}
      {% endblock js_content %}

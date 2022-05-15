@@ -1,9 +1,10 @@
 import json
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import authenticate, logout, login
-from .models import Account, Blog, Category, Discount, Office, OfficeAddress, OfficeEmail, OfficePhone, Order, OrderTypes, Product, ProductImage, Slider, SubCategory, User
+from .models import Account, Blog, Category, Discount, Office, OfficeAddress, OfficeEmail, OfficePhone, Product, ProductImage, Slider, SubCategory, User
 from django.http import HttpRequest, JsonResponse
 from core.settings import BASE_DIR
+from django.contrib import messages
 
 SECURE_PATH_ADMIN = '/control/'
 
@@ -30,7 +31,8 @@ def sign_in(request):
             login(request, user)
             return redirect("control_index")
         else:
-            return redirect(SECURE_PATH_ADMIN + "login/?user404")
+            messages.error(request, 'Parol hato')
+            return redirect(SECURE_PATH_ADMIN + "login/")
 
 def base_context(request):
     try: 
@@ -790,55 +792,6 @@ def control_blog_delete(request):
 # Orders
 
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-def control_orders_all(request): 
-    ordertypes = OrderTypes.objects.all()
-    context = {
-        "base": base_context(request=request),
-        "ordertypes": ordertypes
-    }
-    return render(request, "control/orders/all.html", context)
-
-def control_order_edit(request): 
-    data = json.loads(request.body)
-    order = Order.objects.get(id=data["order_id"])
-    ordertype = OrderTypes.objects.get(id=data["ordertype_id"])
-    order.ordertypes = ordertype
-    order.save()
-    answer = {
-        "code": 200
-    }
-    return JsonResponse(answer, safe=False)
-
-def control_ordertype_edit(request):
-    data = json.loads(request.body)
-    ordertype = OrderTypes.objects.get(id=data["ordertype_id"])
-    ordertype.title_ru = data["title_ru"]
-    ordertype.save()
-    answer = {
-        "code": 200, 
-        "ordertype": {"id": ordertype.id, "title_ru": ordertype.title_ru}
-    }
-    return JsonResponse(answer, safe=False)
-
-def control_ordertype_create(request):
-    data = json.loads(request.body)
-    ordertype = OrderTypes.objects.create(title_ru=data["title_ru"])
-    ordertype.save()
-    answer = {
-        "code": 200, 
-        "ordertype": {"id": ordertype.id, "title_ru": ordertype.title_ru}
-    }
-    return JsonResponse(answer, safe=False)
-
-def control_ordertype_delete(request):
-    data = json.loads(request.body)
-    ordertype = OrderTypes.objects.get(id=data["ordertype_id"])
-    ordertype.delete()
-    answer = {
-        "code": 200
-    }
-    return JsonResponse(answer, safe=False)
-
 def control_accounts(request:HttpRequest):
     accounts_all = Account.objects.all()
     accounts = []
