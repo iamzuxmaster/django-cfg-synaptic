@@ -1,7 +1,7 @@
 import json
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import authenticate, logout, login
-from .models import Account, Blog, Category, Discount, Office, OfficeAddress, OfficeEmail, OfficePhone, Product, ProductImage, Slider, SubCategory, User
+from .models import Account, Blog, Category, Discount, Office, OfficeAddress, OfficeEmail, OfficePhone, Product, ProductImage, Room, Slider, SubCategory, User
 from django.http import HttpRequest, JsonResponse
 from core.settings import BASE_DIR
 from django.contrib import messages
@@ -40,9 +40,11 @@ def base_context(request):
     except: 
         code = None
     office = Office.objects.last()
+    users = User.objects.all()
     context = {
         "office": office,
-        "code": code
+        "code": code,
+        "users": users
     }
     return context
 
