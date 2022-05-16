@@ -5,13 +5,12 @@ from .models import Account, Blog, Category, Discount, Office, OfficeAddress, Of
 from django.http import HttpRequest, JsonResponse
 from core.settings import BASE_DIR
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
 
 SECURE_PATH_ADMIN = '/control/'
 
 def log_in(request:HttpRequest):
-    if request.user.is_authenticated: 
-        return redirect("control_index")
-    else:
         context = {
             "base": base_context(request)
         }
@@ -34,6 +33,9 @@ def sign_in(request):
             messages.error(request, 'Parol hato')
             return redirect(SECURE_PATH_ADMIN + "login/")
 
+
+
+@login_required(login_url="control_login")
 def base_context(request):
     try: 
         code = request.build_absolute_uri().split('?')[1]
@@ -48,6 +50,7 @@ def base_context(request):
     }
     return context
 
+@login_required(login_url="control_login")
 def control_index(request):
     categories = Category.objects.all()
     products = Product.objects.filter(drop=False)
@@ -67,6 +70,7 @@ def control_index(request):
 
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
+@login_required(login_url="control_login")
 def control_categories_all(request):
     categories = Category.objects.all()
     context = {
@@ -76,6 +80,7 @@ def control_categories_all(request):
     return render(request, "control/categories/all.html", context)
 
 
+@login_required(login_url="control_login")
 def control_categories_add(request):
     context = {
         "base": base_context(request=request)
@@ -83,6 +88,7 @@ def control_categories_add(request):
     return render(request, "control/categories/add.html", context)
 
 
+@login_required(login_url="control_login")
 def control_categories_create(request):    
     if request.method == "POST": 
         title_ru = request.POST["title_ru"]
@@ -113,6 +119,7 @@ def control_categories_create(request):
         return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
 def control_categories_detail(request, slug):
     category= get_object_or_404(Category, slug=slug)
     context = {
@@ -122,6 +129,7 @@ def control_categories_detail(request, slug):
     return render(request, "control/categories/detail.html", context)
 
 
+@login_required(login_url="control_login")
 def control_categories_edit(request):
     if request.method == "POST":
         category = get_object_or_404(Category, slug=request.POST["category_slug"])
@@ -147,6 +155,7 @@ def control_categories_edit(request):
         return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
 def control_categories_delete(request):
     if request.method == "POST": 
         category = get_object_or_404(Category, slug=request.POST["category_slug"])
@@ -166,6 +175,7 @@ def control_categories_delete(request):
 # Subcategory
 
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+@login_required(login_url="control_login")
 def control_subcategories_all(request):
     subcategories = SubCategory.objects.all()
     context = {
@@ -175,6 +185,7 @@ def control_subcategories_all(request):
     return render(request, "control/subcategories/all.html", context)
 
 
+@login_required(login_url="control_login")
 def control_subcategories_add(request):
     categories = Category.objects.all()
     context = {
@@ -184,6 +195,7 @@ def control_subcategories_add(request):
     return render(request, "control/subcategories/add.html", context)
 
 
+@login_required(login_url="control_login")
 def control_subcategories_category_add(request):
     data = json.loads(request.body)
     title_ru,  title_uz , priority = data["title_ru"],  data["title_uz"], data["priority"]
@@ -207,6 +219,7 @@ def control_subcategories_category_add(request):
     return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
 def control_subcategories_create(request):    
     if request.method == "POST": 
         title_ru, title_uz, priority = request.POST["title_ru"], request.POST["title_uz"], request.POST["priority"]
@@ -227,6 +240,8 @@ def control_subcategories_create(request):
         return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
+@login_required(login_url="control_login")
 def control_subcategories_detail(request, slug):
     categories = Category.objects.all()
     subcategory = get_object_or_404(SubCategory, slug=slug)
@@ -238,6 +253,7 @@ def control_subcategories_detail(request, slug):
     return render(request, "control/subcategories/detail.html", context)
 
 
+@login_required(login_url="control_login")
 def control_subcategories_edit(request):
     if request.method == "POST":
         category = get_object_or_404(Category, id=request.POST["category_id"])
@@ -266,6 +282,7 @@ def control_subcategories_edit(request):
         return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
 def control_subcategories_delete(request):
     if request.method == "POST": 
         category = get_object_or_404(SubCategory, slug=request.POST["subcategory_slug"])
@@ -284,6 +301,7 @@ def control_subcategories_delete(request):
 # Discounts
 
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+@login_required(login_url="control_login")
 def control_discounts_all(request):
     discounts = Discount.objects.all()
     context = {
@@ -293,6 +311,7 @@ def control_discounts_all(request):
     return render(request, "control/discounts/all.html", context)
 
 
+@login_required(login_url="control_login")
 def control_discount_add(request):
     context = {
         "base": base_context(request=request)
@@ -300,6 +319,7 @@ def control_discount_add(request):
     return render(request, "control/discounts/add.html", context)
 
 
+@login_required(login_url="control_login")
 def control_discount_create(request):    
     if request.method == "POST": 
         title, unit = request.POST["title"], request.POST["unit"]
@@ -317,6 +337,7 @@ def control_discount_create(request):
         return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
 def control_discount_detail(request, id):
     discount = get_object_or_404(Discount, id=id)
     context = {
@@ -326,6 +347,7 @@ def control_discount_detail(request, id):
     return render(request, "control/discounts/detail.html", context)
 
 
+@login_required(login_url="control_login")
 def control_discount_edit(request):
     if request.method == "POST":
         discount = get_object_or_404(Discount, id=request.POST["discount_id"])
@@ -352,6 +374,7 @@ def control_discount_edit(request):
 
 
 
+@login_required(login_url="control_login")
 def control_discount_delete(request):
     if request.method == "POST": 
         discount = get_object_or_404(Discount, id=request.POST["discount_id"])
@@ -373,6 +396,7 @@ def control_discount_delete(request):
 
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
+@login_required(login_url="control_login")
 def control_products_all(request):
     products = Product.objects.filter(drop=False)
     context = {
@@ -382,6 +406,7 @@ def control_products_all(request):
     return render(request, "control/products/all.html", context)
 
 
+@login_required(login_url="control_login")
 def control_product_add(request):
     categories = Category.objects.all()
     subcategories = SubCategory.objects.all()
@@ -396,6 +421,7 @@ def control_product_add(request):
     return render(request, "control/products/add.html", context)
 
 
+@login_required(login_url="control_login")
 def control_products_subcategory_add(request):
     data = json.loads(request.body)
     category  = get_object_or_404(Category, id=data["category_id"])
@@ -420,6 +446,7 @@ def control_products_subcategory_add(request):
     return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
 def control_products_discount_add(request):
     data = json.loads(request.body)
     title = data["title"]
@@ -444,6 +471,7 @@ def control_products_discount_add(request):
 
 
 
+@login_required(login_url="control_login")
 def control_product_create(request):
     if request.method == "POST" and request.FILES["file"]:
         if request.POST["title_ru"].lower().strip() not in list(map(lambda product: product.title_ru.lower().strip(), Product.objects.all())):
@@ -474,6 +502,7 @@ def control_product_create(request):
         }
         return JsonResponse(answer, safe=False)
 
+@login_required(login_url="control_login")
 def control_product_image_add(request: HttpRequest):
     product = Product.objects.get(id=request.POST["product_id"])
     product_img = ProductImage.objects.create(product=product, img_min=request.FILES["file"], img_full=request.FILES["file"])
@@ -484,6 +513,7 @@ def control_product_image_add(request: HttpRequest):
     }
     return JsonResponse(answer, safe=False)
 
+@login_required(login_url="control_login")
 def control_product_image_delete(request: HttpRequest):
     body = json.loads(request.body)
     product_img = ProductImage.objects.get(id=body["product_image_id"])
@@ -494,6 +524,7 @@ def control_product_image_delete(request: HttpRequest):
     return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
 def control_product_detail(request, slug):
     categories = Category.objects.all()
     subcategories = SubCategory.objects.all()
@@ -509,6 +540,7 @@ def control_product_detail(request, slug):
     return render(request, 'control/products/detail.html', context)
 
 
+@login_required(login_url="control_login")
 def control_product_edit(request):
     if request.method == 'POST' or request.FILES["file"]:
         product = get_object_or_404(Product, slug=request.POST["product_slug"])
@@ -558,7 +590,9 @@ def control_product_edit(request):
         }
         return JsonResponse(answer, safe=False)
 
-        
+       
+@login_required(login_url="control_login") 
+@login_required(login_url="control_login")
 def control_product_delete(request):
     if request.method == "POST":
         product = get_object_or_404(Product, slug=request.POST["product_slug"])
@@ -576,6 +610,8 @@ def control_product_delete(request):
 
 
 
+@login_required(login_url="control_login")
+@login_required(login_url="control_login")
 def control_sliders_all(request):
     sliders = Slider.objects.all()
     context = {
@@ -585,6 +621,8 @@ def control_sliders_all(request):
     return render(request, "control/sliders/all.html", context)
 
 
+@login_required(login_url="control_login")
+@login_required(login_url="control_login")
 def control_sliders_add(request):
     context = {
         "base": base_context(request=request)
@@ -592,6 +630,8 @@ def control_sliders_add(request):
     return render(request, "control/sliders/add.html", context)
 
 
+@login_required(login_url="control_login")
+@login_required(login_url="control_login")
 def control_sliders_create(request):
     if request.method == "POST" and request.FILES["file"]: 
         title_ru = request.POST["title_ru"]
@@ -626,6 +666,8 @@ def control_sliders_create(request):
         return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
+@login_required(login_url="control_login")
 def control_sliders_detail(request, slug):
     slider = get_object_or_404(Slider, slug=slug)
     context = {
@@ -635,7 +677,8 @@ def control_sliders_detail(request, slug):
     return render(request, "control/sliders/detail.html", context)
 
 
-
+@login_required(login_url="control_login")
+@login_required(login_url="control_login")
 def control_sliders_edit(request):
     if request.method == "POST" or request.FILES["file"]:
         content_uz = request.POST["content_uz"]
@@ -682,6 +725,7 @@ def control_sliders_edit(request):
 
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
+@login_required(login_url="control_login")
 def control_sliders_delete(request):
     if request.method == "POST":
         slug = request.POST["slider_slug"]
@@ -690,6 +734,7 @@ def control_sliders_delete(request):
     return redirect(SECURE_PATH_ADMIN+"sliders/?deleted")
 
 
+@login_required(login_url="control_login")
 def control_blogs_all(request):
     blogs= Blog.objects.all()
     context = {
@@ -699,6 +744,7 @@ def control_blogs_all(request):
     return render(request, "control/blogs/all.html", context)
 
 
+@login_required(login_url="control_login")
 def control_blog_add(request):
     context = {
         "base": base_context(request=request)
@@ -706,6 +752,7 @@ def control_blog_add(request):
     return render(request, "control/blogs/add.html", context)
 
 
+@login_required(login_url="control_login")
 def control_blog_create(request):    
     if request.method == "POST" and request.FILES["file"]:  
         title_ru = request.POST["title_ru"]
@@ -728,6 +775,7 @@ def control_blog_create(request):
         return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
 def control_blog_detail(request, id):
     blog= get_object_or_404(Blog, id=id)
     context = {
@@ -737,6 +785,7 @@ def control_blog_detail(request, id):
     return render(request, "control/blogs/detail.html", context)
 
 
+@login_required(login_url="control_login")
 def control_blog_edit(request):    
     if request.method == "POST" or request.FILES["file"]:  
         blog = get_object_or_404(Blog, id=request.POST["blog_id"])
@@ -768,6 +817,7 @@ def control_blog_edit(request):
 
 
 
+@login_required(login_url="control_login")
 def control_blog_delete(request):
     if request.method == "POST":
         blog = get_object_or_404(Blog, id=request.POST["blog_id"])
@@ -794,6 +844,7 @@ def control_blog_delete(request):
 # Orders
 
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+@login_required(login_url="control_login")
 def control_accounts(request:HttpRequest):
     accounts_all = Account.objects.all()
     accounts = []
@@ -807,6 +858,7 @@ def control_accounts(request:HttpRequest):
     }
     return render(request, "control/accounts/all.html", context)
 
+@login_required(login_url="control_login")
 def control_admins(request:HttpRequest):
     accounts_all = Account.objects.all()
     accounts = []
@@ -821,12 +873,14 @@ def control_admins(request:HttpRequest):
     return render(request, "control/admins/all.html", context)
 
 
+@login_required(login_url="control_login")
 def control_admins_add(request:HttpRequest):
     context = {
         "base": base_context(request),
     }
     return render(request, "control/admins/add.html", context)
 
+@login_required(login_url="control_login")
 def control_admins_create(request:HttpRequest):
     if request.method == 'POST': 
         if request.POST["login"] not in list(map(lambda user: user.username, User.objects.all())) and request.POST["email"] not in list(map(lambda user: user.email, User.objects.all())):
@@ -857,6 +911,7 @@ def control_admins_create(request:HttpRequest):
 
 
 
+@login_required(login_url="control_login")
 def control_admins_detail(request: HttpRequest, login):
     account = Account.objects.get(user__username=login)
     roles = [
@@ -872,6 +927,7 @@ def control_admins_detail(request: HttpRequest, login):
 
 
 
+@login_required(login_url="control_login")
 def control_admins_edit(request:HttpRequest):
     if request.method == 'POST': 
         login = request.POST["login"]
@@ -895,6 +951,7 @@ def control_admins_edit(request:HttpRequest):
 
     return redirect(SECURE_PATH_ADMIN + f'admin/{user.username}/?edited')
 
+@login_required(login_url="control_login")
 def control_admins_delete(request:HttpRequest):
     if request.method == "POST": 
         user = User.objects.get(username=request.POST["username"])
@@ -906,6 +963,7 @@ def control_admins_delete(request:HttpRequest):
 
 
 
+@login_required(login_url="control_login")
 def control_aboutus(request):
     office, office_created = Office.objects.get_or_create(id=1)
     aboutus_address = OfficeAddress.objects.all()
@@ -921,6 +979,7 @@ def control_aboutus(request):
     }
     return render(request, "control/aboutus/about.html", context)
 
+@login_required(login_url="control_login")
 def control_aboutus_edit(request: HttpRequest):
     if request.method == "POST" or request.FILES["file"]: 
         title_ru = request.POST["title_ru"]
@@ -968,6 +1027,7 @@ def control_aboutus_edit(request: HttpRequest):
     return redirect(SECURE_PATH_ADMIN + 'aboutus/?edited')
 
 
+@login_required(login_url="control_login")
 def control_aboutus_phone_add(request: HttpRequest):
     data = json.loads(request.body)
     phone = data["phone"]
@@ -979,6 +1039,7 @@ def control_aboutus_phone_add(request: HttpRequest):
     return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
 def control_aboutus_email_add(request: HttpRequest):
     data = json.loads(request.body)
     email = data["email"]
@@ -989,6 +1050,7 @@ def control_aboutus_email_add(request: HttpRequest):
     }
     return JsonResponse(answer, safe=False)
 
+@login_required(login_url="control_login")
 def control_aboutus_phone_delete(request: HttpRequest):
     data = json.loads(request.body)
     phone = data["phone_id"]
@@ -1000,6 +1062,7 @@ def control_aboutus_phone_delete(request: HttpRequest):
     return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
 def control_aboutus_email_delete(request: HttpRequest):
     data = json.loads(request.body)
     email = data["email_id"]
@@ -1011,6 +1074,7 @@ def control_aboutus_email_delete(request: HttpRequest):
     return JsonResponse(answer, safe=False)
 
 
+@login_required(login_url="control_login")
 def control_aboutus_address_add(request: HttpRequest):
     if request.method == "POST":
         address = OfficeAddress.objects.create(address=request.POST["address"])

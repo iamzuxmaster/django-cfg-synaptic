@@ -76,9 +76,10 @@
     <!-- JS Global Plugins -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <input type="hidden" name="req_id" value="{{request.user.account.id}}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor5/31.1.0/ckeditor.min.js" 
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor5/31.1.0/ckeditor.min.js" 
     integrity="sha512-A2+2JT5Hd8WgdCcY0kx5vxi+W6c+e3gv0M1rYpJ1uaYBofZ+izmDSEQLTRctRcRfxA+iGE+MhCjdFMFDYubFQw==" 
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    <script src="{% static 'control/assets/plugins/ckeditor/build/ckeditor.js' %}"> </script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <style>
       div.col-sm-12.col-md-6 {

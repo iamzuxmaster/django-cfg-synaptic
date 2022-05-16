@@ -151,9 +151,21 @@
             <input class="form-check-input" name="available" type="checkbox" {% if product.available %} checked="" {% endif %}>
             <label class="form-check-label" for="flexSwitchCheckCheckedDanger">Вид</label>
           </div>
+
+          <div class="centered">
+            <div class="row">
+              <div class="document-editor__toolbar"></div>
+            </div>
+            <div class="row row-editor">
+              <div class="editor-container">
+                <div class="editor">
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="col-md-12">
             <label for="validationCustomUsername" class="form-label">Описание RU</label>
-              <textarea id="editor" class="form-control" name="description_ru">{{ product.description_ru }}</textarea>
+              <textarea id="editor"  data-editor="DecoupledDocumentEditor" data-collaboration="false" data-revision-history="false" class="form-control" name="description_ru">{{ product.description_ru }}</textarea>
           </div>
           <div class="col-md-12">
             <label for="validationCustomUsername" class="form-label">Описание UZ</label>
@@ -422,37 +434,40 @@ function deletefunction(element){
   })
 </script>
 
-<script>
-  ClassicEditor.defaultConfig = { 
-    toolbar: { 
-      items: [ 
-        'heading', 
-        '|', 
-        'bold', 
-        'italic', 
-        '|', 
-        'bulletedList', 
-        'numberedList', 
-        '|', 
-        'insertTable', 
-        '|', 
- 
-        'undo', 
-        'redo' 
-      ] 
-    }, 
- 
-    table: { 
-      contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'] 
-    }, 
-    language: 'en' 
-  }; 
-  ClassicEditor.create(document.querySelector("#editor")).catch((error) => { 
-    console.error(error); 
-  });
-  ClassicEditor.create(document.querySelector("#editor1")).catch((error) => { 
-    console.error(error); 
-  });
+<script>DecoupledDocumentEditor
+  .create( document.querySelector( '.editor' ), {
+    fontFamily: {
+      options: [
+          'default',
+          'Ubuntu, Arial, sans-serif',
+          'Ubuntu Mono, Courier New, Courier, monospace'
+      ]
+  },
+  fontSize: {
+    options: [
+        9,
+        11,
+        13,
+        'default',
+        17,
+        19,
+        21
+    ]
+},
+    licenseKey: '',
+    
+  } )
+  .then( editor => {
+    window.editor = editor;
+    document.querySelector( '.document-editor__toolbar' ).appendChild( editor.ui.view.toolbar.element );
+    document.querySelector( '.ck-toolbar' ).classList.add( 'ck-reset_all' );
+  } )
+  .catch( error => {
+    console.error( 'Oops, something went wrong!' );
+    console.error( 'Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:' );
+    console.warn( 'Build id: uqeao5kq1i8t-g20if95tn5bp' );
+    console.error( error );
+  } );
   
 </script>
 
