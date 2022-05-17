@@ -6,6 +6,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 
+
+
 class Region(models.Model):
     title_uz = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
@@ -281,6 +283,16 @@ class OfficeAddress(models.Model):
     title = models.CharField(max_length=255, null=True, blank=True)
     address = models.TextField()
 
+class NotificationType(models.Model):
+    title = models.CharField(max_length=255)
+    icon = models.CharField(max_length=255) 
+
+class Notification(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    type = models.ForeignKey(NotificationType, on_delete=models.SET_NULL, null=True, blank=True)
+    readed = models.BooleanField(default=False)
+    title = models.CharField(max_length=255)
+    content = models.TextField()
 
 class Room(models.Model):
     account_a = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="room_account_a")

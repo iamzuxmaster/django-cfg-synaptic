@@ -1002,18 +1002,6 @@ def control_aboutus_edit(request: HttpRequest):
             pass
 
 
-        if request.POST["user_dev"] == 'True':
-            try: 
-                if request.POST["category_imgs"]: 
-                    office.category_imgs = True
-                else:
-                    office.categoy_imgs = False
-            except:
-                office.category_imgs = False
-            
-            office.main_color = request.POST["main_color"]
-
-
 
         try: 
             office.logo = request.FILES["file"]
