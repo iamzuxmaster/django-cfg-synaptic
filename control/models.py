@@ -44,14 +44,15 @@ class Account(models.Model):
         ("moderator", "Moderator"),
         ("admin", "Admin"),
         ("superadmin", "SuperAdmin"),
-        ("dev", "Developer"),
+        ("developer", "Developer"),
     ]
-    role = models.CharField(max_length=255, choices=roles)
+    role = models.CharField(max_length=255, choices=roles, default="client")
     telegram_id = models.IntegerField(null=True, blank=True)
     telegram_langs = [
         ("ru", "Русские"),
         ("uz", "O'zbekcha"),
     ]
+    secret_key  = models.CharField(max_length=255, null=True, blank=True)
     telegram_lang = models.CharField(max_length=5, choices=telegram_langs, null=True, blank=True)
     verified = models.BooleanField(default=False)
     online = models.BooleanField(default=False)

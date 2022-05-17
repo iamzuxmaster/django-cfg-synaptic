@@ -74,24 +74,6 @@
             </div>
         </div>
 
-        {% if request.user.account.role == 'dev' %}
-        <div class="col-6 form-check-danger form-check form-switch">
-          <input class="form-check-input" name="category_imgs" type="checkbox" {% if base.office.category_imgs %} checked="" {% endif %}>
-          <label class="form-check-label" for="flexSwitchCheckCheckedDanger">Изображение категория</label>
-        </div>
-        <div class="col-6">
-          <div class="mb-3">
-            <h5 class="mb-3">Цвет Dashboard</h5>
-            <input type="color" name="main_color" value="{{ base.office.main_color }}" class="form-control has-validation">
-          </div>
-      </div>
-      {% endif %}
-      {% if request.user.account.role == 'dev' %}
-        <input type="hidden" name="user_dev" value="True">
-      {% else %}
-        <input type="hidden" name="user_dev" value="False">
-      {% endif %}
-
           <div class="col-md-12">
             <label for="validationCustomUsername" class="form-label">Описание RU</label>
             <textarea id="editor1" class="form-control"  name="description_ru">{{ about.description_ru }}</textarea>

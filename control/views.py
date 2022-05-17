@@ -16,6 +16,9 @@ def log_in(request:HttpRequest):
         }
         return render(request, 'control/login.html', context)   
 
+
+
+
 def log_out(request):
     logout(request)
     return redirect(SECURE_PATH_ADMIN + "login/")
@@ -1092,3 +1095,19 @@ def control_aboutus_address_add(request: HttpRequest):
 
 
     return redirect(SECURE_PATH_ADMIN + 'aboutus/?address_edited')
+
+@login_required(login_url="control_login")
+def control_configurations(request):
+    office, office_created = Office.objects.get_or_create(id=1)
+    aboutus_address = OfficeAddress.objects.all()
+    office_phones = OfficePhone.objects.all()
+
+    office_emails = OfficeEmail.objects.all()
+    context = {
+        "base": base_context(request=request),
+        "about": office,
+        "aboutus_address": aboutus_address,
+        "office_phones": office_phones,
+        "office_emails": office_emails
+    }
+    return render(request, "control/configurations/configurations.html", context)
