@@ -83,6 +83,8 @@ urlpatterns = [
         path("aboutus/email/delete/", views.control_aboutus_email_delete, name="control_aboutus_email_delete"),
     path("aboutus/address/add/", views.control_aboutus_address_add, name="control_aboutus_address_add"),
 
+    path("profile/", views.control_profile, name=""),
+
     # For Developers
     path("configurations/", views.control_configurations, name="control_configurations"),
 

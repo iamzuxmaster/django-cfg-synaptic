@@ -1,5 +1,4 @@
 {% load static %}
-{% load static %}
 <!doctype html>
 <html lang="en">
 
@@ -351,15 +350,15 @@
                          <div class="d-flex flex-row align-items-center gap-2">
                             <img src="{% static 'control/assets/images/avatars/06.png' %}" alt="" class="rounded-circle" width="54" height="54">
                             <div class="">
-                              <h6 class="mb-0 dropdown-user-name">Jhon Deo</h6>
-                              <small class="mb-0 dropdown-user-designation text-secondary">UI Developer</small>
+                              <h6 class="mb-0 dropdown-user-name">{{request.user.first_name}}</h6>
+                              <small class="mb-0 dropdown-user-designation text-secondary">{{ request.user.account.role }}</small>
                             </div>
                          </div>
                        </a>
                      </li>
                      <li><hr class="dropdown-divider"></li>
                      <li>
-                        <a class="dropdown-item" href="javascript:;">
+                        <a class="dropdown-item" href="{% url 'control_edit_profile' %}">
                            <div class="d-flex align-items-center">
                              <div class=""><ion-icon name="person-outline"></ion-icon></div>
                              <div class="ms-3"><span>Профиль</span></div>

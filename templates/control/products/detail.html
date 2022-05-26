@@ -380,7 +380,6 @@
   $product_image.addEventListener('change',function(){
     let data = new FormData()
     data.append('file', this.files[0])
-    console.log(this.files[0]);
     data.append('product_id', this.dataset.product_id)
     fetch('/control/product/image/add/', {
       method: "POST",
